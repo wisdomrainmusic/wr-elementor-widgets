@@ -102,13 +102,14 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
         $settings = $this->get_settings_for_display();
         if ( empty( $settings['slides'] ) ) return;
 
-        echo '<div class="wr-hero-slider">';
+        echo '<div class="wr-hero-slider-swiper swiper">';
+        echo '<div class="swiper-wrapper">';
 
         foreach ( $settings['slides'] as $slide ) {
 
             $bg = isset( $slide['image']['url'] ) ? $slide['image']['url'] : '';
 
-            echo '<div class="wr-hero-slide" style="background-image:url(' . esc_url( $bg ) . ')">';
+            echo '<div class="wr-hero-slide swiper-slide" style="background-image:url(' . esc_url( $bg ) . ')">';
 
             echo '<div class="wr-hero-content">';
             if ( ! empty( $slide['title'] ) ) {
@@ -129,6 +130,10 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             echo '</div>'; // slide
         }
 
-        echo '</div>'; // slider
+        echo '</div>'; // swiper-wrapper
+        echo '<div class="swiper-pagination"></div>';
+        echo '<div class="swiper-button-prev"></div>';
+        echo '<div class="swiper-button-next"></div>';
+        echo '</div>'; // swiper
     }
 }
