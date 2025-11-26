@@ -218,54 +218,30 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             ]
         );
 
-        // Ana yükseklik kontrolü (responsive).
+        // Slider yüksekliği (varsayılan: 550 / 420 / 320px).
         $this->add_responsive_control(
             'slider_height',
             [
-                'label' => __( 'Height', 'wr-ew' ),
+                'label' => __( 'Slider Height', 'wr-ew' ),
                 'type'  => \Elementor\Controls_Manager::SLIDER,
-                'size_units' => [ 'px', 'vh' ],
+                'size_units' => [ 'px' ],
                 'range' => [
                     'px' => [ 'min' => 200, 'max' => 900 ],
-                    'vh' => [ 'min' => 20, 'max' => 100 ],
+                ],
+                'default' => [
+                    'size' => 550,
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => 420,
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => 320,
+                    'unit' => 'px',
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .wr-hero-slide' => 'height: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        // Minimum yükseklik (farklı oranlı görseller için güvenlik bariyeri).
-        $this->add_responsive_control(
-            'slider_min_height',
-            [
-                'label' => __( 'Min Height', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::SLIDER,
-                'size_units' => [ 'px', 'vh' ],
-                'range' => [
-                    'px' => [ 'min' => 200, 'max' => 900 ],
-                    'vh' => [ 'min' => 20, 'max' => 100 ],
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-slide' => 'min-height: {{SIZE}}{{UNIT}};',
-                ],
-                'separator' => 'before',
-            ]
-        );
-
-        // Maksimum yükseklik (auto modlarında taşmayı önler).
-        $this->add_responsive_control(
-            'slider_max_height',
-            [
-                'label' => __( 'Max Height', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::SLIDER,
-                'size_units' => [ 'px', 'vh' ],
-                'range' => [
-                    'px' => [ 'min' => 300, 'max' => 1200 ],
-                    'vh' => [ 'min' => 30, 'max' => 100 ],
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-slide' => 'max-height: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -306,26 +282,6 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
                 'selectors' => [
                     '{{WRAPPER}} .wr-hero-content' => 'text-align: {{VALUE}};',
                 ],
-            ]
-        );
-
-        // Image fit kontrolü (cover / contain / auto).
-        $this->add_control(
-            'image_fit',
-            [
-                'label'   => __( 'Image Fit', 'wr-ew' ),
-                'type'    => \Elementor\Controls_Manager::SELECT,
-                'options' => [
-                    ''        => __( 'Default (Cover)', 'wr-ew' ),
-                    'cover'   => __( 'Cover', 'wr-ew' ),
-                    'contain' => __( 'Contain', 'wr-ew' ),
-                    'auto'    => __( 'Auto', 'wr-ew' ),
-                ],
-                'default' => '',
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-slide' => 'background-size: {{VALUE}};',
-                ],
-                'separator' => 'before',
             ]
         );
 
