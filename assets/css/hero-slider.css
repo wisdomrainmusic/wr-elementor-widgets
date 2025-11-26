@@ -1,34 +1,49 @@
 .wr-hero-slider-swiper {
     width: 100%;
     position: relative;
+    /* Varsayılan oran (yükseklik = genişliğin %45'i). JS ilk görselden bunu güncelleyecek. */
+    --wr-hero-ratio: 45%;
 }
 
 .wr-hero-slide {
-    height: 500px;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
     background-size: cover;
     background-position: center;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    background-repeat: no-repeat;
 }
 
+/* Aspect-ratio katmanı: yüksekliği orana göre ayarlar */
 .wr-hero-slide::before {
+    content: "";
+    display: block;
+    width: 100%;
+    padding-top: var(--wr-hero-ratio);
+}
+
+/* Overlay katmanı (Elementor'daki Overlay Color bunu override eder) */
+.wr-hero-slide::after {
     content: "";
     position: absolute;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.35); /* Elementor overlay control bunu override eder */
+    background-color: rgba(0, 0, 0, 0.35);
     pointer-events: none;
 }
 
 .wr-hero-content {
-    position: relative;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     max-width: 720px;
     margin: 0 auto;
-    text-align: center;
     padding: 24px;
+    text-align: center;
     color: #ffffff;
+    z-index: 2;
 }
 
 .wr-hero-content h2 {
@@ -56,6 +71,7 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    z-index: 3;
 }
 
 .wr-hero-btn:hover {
@@ -98,10 +114,11 @@
     background: #ffffff;
 }
 
-/* Responsive */
+/* Responsive: ekran küçüldükçe default oranı biraz büyütüyoruz.
+   JS bunu ilk görselden override ederse zaten burası fallback kalır. */
 @media (max-width: 1024px) {
-    .wr-hero-slide {
-        height: 420px;
+    .wr-hero-slider-swiper {
+        --wr-hero-ratio: 55%;
     }
 
     .wr-hero-content h2 {
@@ -114,8 +131,8 @@
 }
 
 @media (max-width: 767px) {
-    .wr-hero-slide {
-        height: 340px;
+    .wr-hero-slider-swiper {
+        --wr-hero-ratio: 70%;
     }
 
     .wr-hero-content {
