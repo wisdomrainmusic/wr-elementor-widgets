@@ -16,6 +16,41 @@ function wr_ew_register_category( $elements_manager ) {
     );
 }
 
+// Enqueue Swiper & custom slider assets
+add_action('wp_enqueue_scripts', function() {
+    // Swiper CSS
+    wp_enqueue_style(
+        'wr-swiper',
+        'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'
+    );
+
+    // Custom CSS
+    wp_enqueue_style(
+        'wr-hero-slider-css',
+        WR_EW_PLUGIN_URL . 'assets/css/hero-slider.css',
+        [],
+        '1.0.0'
+    );
+
+    // Swiper JS
+    wp_enqueue_script(
+        'wr-swiper',
+        'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+        [],
+        null,
+        true
+    );
+
+    // Custom JS
+    wp_enqueue_script(
+        'wr-hero-slider-js',
+        WR_EW_PLUGIN_URL . 'assets/js/hero-slider.js',
+        ['wr-swiper'],
+        '1.0.0',
+        true
+    );
+});
+
 // Register widgets loader.
 function wr_ew_register_widgets( $widgets_manager ) {
 
