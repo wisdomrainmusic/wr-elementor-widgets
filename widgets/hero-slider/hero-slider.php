@@ -24,10 +24,10 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
     }
 
     protected function register_controls() {
+
         /* ------------------------------
          * CONTENT CONTROLS (Slides)
          * ------------------------------ */
-
         $this->start_controls_section(
             'content_section',
             [
@@ -41,8 +41,8 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
         $repeater->add_control(
             'title',
             [
-                'label' => __( 'Title', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::TEXT,
+                'label'   => __( 'Title', 'wr-ew' ),
+                'type'    => \Elementor\Controls_Manager::TEXT,
                 'default' => __( 'Your Slide Title', 'wr-ew' ),
             ]
         );
@@ -50,8 +50,8 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
         $repeater->add_control(
             'subtitle',
             [
-                'label' => __( 'Subtitle', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::TEXTAREA,
+                'label'   => __( 'Subtitle', 'wr-ew' ),
+                'type'    => \Elementor\Controls_Manager::TEXTAREA,
                 'default' => __( 'Your slide subtitle goes here.', 'wr-ew' ),
             ]
         );
@@ -59,8 +59,8 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
         $repeater->add_control(
             'button_text',
             [
-                'label' => __( 'Button Text', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::TEXT,
+                'label'   => __( 'Button Text', 'wr-ew' ),
+                'type'    => \Elementor\Controls_Manager::TEXT,
                 'default' => __( 'Learn More', 'wr-ew' ),
             ]
         );
@@ -71,8 +71,8 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
                 'label' => __( 'Button Link', 'wr-ew' ),
                 'type'  => \Elementor\Controls_Manager::URL,
                 'default' => [
-                    'url' => '#'
-                ]
+                    'url' => '#',
+                ],
             ]
         );
 
@@ -218,11 +218,13 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             ]
         );
 
+        // Ana yükseklik kontrolü (responsive).
         $this->add_responsive_control(
             'slider_height',
             [
                 'label' => __( 'Height', 'wr-ew' ),
                 'type'  => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'vh' ],
                 'range' => [
                     'px' => [ 'min' => 200, 'max' => 900 ],
                     'vh' => [ 'min' => 20, 'max' => 100 ],
@@ -233,6 +235,42 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             ]
         );
 
+        // Minimum yükseklik (farklı oranlı görseller için güvenlik bariyeri).
+        $this->add_responsive_control(
+            'slider_min_height',
+            [
+                'label' => __( 'Min Height', 'wr-ew' ),
+                'type'  => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'vh' ],
+                'range' => [
+                    'px' => [ 'min' => 200, 'max' => 900 ],
+                    'vh' => [ 'min' => 20, 'max' => 100 ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slide' => 'min-height: {{SIZE}}{{UNIT}};',
+                ],
+                'separator' => 'before',
+            ]
+        );
+
+        // Maksimum yükseklik (auto modlarında taşmayı önler).
+        $this->add_responsive_control(
+            'slider_max_height',
+            [
+                'label' => __( 'Max Height', 'wr-ew' ),
+                'type'  => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'vh' ],
+                'range' => [
+                    'px' => [ 'min' => 300, 'max' => 1200 ],
+                    'vh' => [ 'min' => 30, 'max' => 100 ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slide' => 'max-height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        // Overlay rengi kontrolü.
         $this->add_control(
             'overlay_color',
             [
@@ -241,9 +279,11 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
                 'selectors' => [
                     '{{WRAPPER}} .wr-hero-slide::before' => 'background-color: {{VALUE}};',
                 ],
+                'separator' => 'before',
             ]
         );
 
+        // İçerik hizalama.
         $this->add_responsive_control(
             'content_alignment',
             [
@@ -269,12 +309,34 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             ]
         );
 
+        // Image fit kontrolü (cover / contain / auto).
+        $this->add_control(
+            'image_fit',
+            [
+                'label'   => __( 'Image Fit', 'wr-ew' ),
+                'type'    => \Elementor\Controls_Manager::SELECT,
+                'options' => [
+                    ''        => __( 'Default (Cover)', 'wr-ew' ),
+                    'cover'   => __( 'Cover', 'wr-ew' ),
+                    'contain' => __( 'Contain', 'wr-ew' ),
+                    'auto'    => __( 'Auto', 'wr-ew' ),
+                ],
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slide' => 'background-size: {{VALUE}};',
+                ],
+                'separator' => 'before',
+            ]
+        );
+
         $this->end_controls_section();
     }
 
     protected function render() {
         $settings = $this->get_settings_for_display();
-        if ( empty( $settings['slides'] ) ) return;
+        if ( empty( $settings['slides'] ) ) {
+            return;
+        }
 
         echo '<div class="wr-hero-slider-swiper swiper">';
         echo '<div class="swiper-wrapper">';
@@ -299,9 +361,9 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
                 echo '<a href="' . esc_url( $link ) . '" class="wr-hero-btn">' . esc_html( $slide['button_text'] ) . '</a>';
             }
 
-            echo '</div>'; // content
+            echo '</div>'; // wr-hero-content
 
-            echo '</div>'; // slide
+            echo '</div>'; // wr-hero-slide
         }
 
         echo '</div>'; // swiper-wrapper
