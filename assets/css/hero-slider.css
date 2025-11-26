@@ -1,25 +1,16 @@
 .wr-hero-slider-swiper {
     width: 100%;
     position: relative;
-    /* Varsayılan oran (yükseklik = genişliğin %45'i). JS ilk görselden bunu güncelleyecek. */
-    --wr-hero-ratio: 45%;
 }
 
 .wr-hero-slide {
     position: relative;
     width: 100%;
     overflow: hidden;
-    background-size: cover;
+    height: 550px;
+    background-size: contain !important;
     background-position: center;
     background-repeat: no-repeat;
-}
-
-/* Aspect-ratio katmanı: yüksekliği orana göre ayarlar */
-.wr-hero-slide::before {
-    content: "";
-    display: block;
-    width: 100%;
-    padding-top: var(--wr-hero-ratio);
 }
 
 /* Overlay katmanı (Elementor'daki Overlay Color bunu override eder) */
@@ -114,11 +105,9 @@
     background: #ffffff;
 }
 
-/* Responsive: ekran küçüldükçe default oranı biraz büyütüyoruz.
-   JS bunu ilk görselden override ederse zaten burası fallback kalır. */
 @media (max-width: 1024px) {
-    .wr-hero-slider-swiper {
-        --wr-hero-ratio: 55%;
+    .wr-hero-slide {
+        height: 420px;
     }
 
     .wr-hero-content h2 {
@@ -131,8 +120,8 @@
 }
 
 @media (max-width: 767px) {
-    .wr-hero-slider-swiper {
-        --wr-hero-ratio: 70%;
+    .wr-hero-slide {
+        height: 320px;
     }
 
     .wr-hero-content {
