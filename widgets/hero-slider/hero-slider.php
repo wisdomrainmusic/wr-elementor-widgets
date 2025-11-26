@@ -277,7 +277,7 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
                 'label' => __( 'Overlay Color', 'wr-ew' ),
                 'type'  => \Elementor\Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .wr-hero-slide::before' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .wr-hero-slide::after' => 'background-color: {{VALUE}};',
                 ],
                 'separator' => 'before',
             ]
