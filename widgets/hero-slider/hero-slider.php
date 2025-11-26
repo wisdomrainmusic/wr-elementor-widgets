@@ -24,6 +24,9 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
     }
 
     protected function register_controls() {
+        /* ------------------------------
+         * CONTENT CONTROLS (Slides)
+         * ------------------------------ */
 
         $this->start_controls_section(
             'content_section',
@@ -92,6 +95,177 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
                 'fields'      => $repeater->get_controls(),
                 'default'     => [],
                 'title_field' => '{{{ title }}}',
+            ]
+        );
+
+        $this->end_controls_section();
+
+        /* ------------------------------
+         * STYLE TAB — TITLE
+         * ------------------------------ */
+        $this->start_controls_section(
+            'style_title_section',
+            [
+                'label' => __( 'Title', 'wr-ew' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'title_color',
+            [
+                'label' => __( 'Color', 'wr-ew' ),
+                'type'  => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-content h2' => 'color: {{VALUE}}',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name'     => 'title_typography',
+                'selector' => '{{WRAPPER}} .wr-hero-content h2',
+            ]
+        );
+
+        $this->end_controls_section();
+
+        /* ------------------------------
+         * STYLE TAB — SUBTITLE
+         * ------------------------------ */
+        $this->start_controls_section(
+            'style_subtitle_section',
+            [
+                'label' => __( 'Subtitle', 'wr-ew' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'subtitle_color',
+            [
+                'label' => __( 'Color', 'wr-ew' ),
+                'type'  => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-content p' => 'color: {{VALUE}}',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name'     => 'subtitle_typography',
+                'selector' => '{{WRAPPER}} .wr-hero-content p',
+            ]
+        );
+
+        $this->end_controls_section();
+
+        /* ------------------------------
+         * STYLE TAB — BUTTON
+         * ------------------------------ */
+        $this->start_controls_section(
+            'style_button_section',
+            [
+                'label' => __( 'Button', 'wr-ew' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'btn_text_color',
+            [
+                'label' => __( 'Text Color', 'wr-ew' ),
+                'type'  => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-btn' => 'color: {{VALUE}}',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'btn_bg_color',
+            [
+                'label' => __( 'Background Color', 'wr-ew' ),
+                'type'  => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-btn' => 'background-color: {{VALUE}}',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name'     => 'button_typography',
+                'selector' => '{{WRAPPER}} .wr-hero-btn',
+            ]
+        );
+
+        $this->end_controls_section();
+
+        /* ------------------------------
+         * STYLE TAB — LAYOUT
+         * ------------------------------ */
+        $this->start_controls_section(
+            'style_layout_section',
+            [
+                'label' => __( 'Layout', 'wr-ew' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_responsive_control(
+            'slider_height',
+            [
+                'label' => __( 'Height', 'wr-ew' ),
+                'type'  => \Elementor\Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [ 'min' => 200, 'max' => 900 ],
+                    'vh' => [ 'min' => 20, 'max' => 100 ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slide' => 'height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'overlay_color',
+            [
+                'label' => __( 'Overlay Color', 'wr-ew' ),
+                'type'  => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slide::before' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'content_alignment',
+            [
+                'label'   => __( 'Content Alignment', 'wr-ew' ),
+                'type'    => \Elementor\Controls_Manager::CHOOSE,
+                'options' => [
+                    'left' => [
+                        'title' => __( 'Left', 'wr-ew' ),
+                        'icon'  => 'eicon-text-align-left',
+                    ],
+                    'center' => [
+                        'title' => __( 'Center', 'wr-ew' ),
+                        'icon'  => 'eicon-text-align-center',
+                    ],
+                    'right' => [
+                        'title' => __( 'Right', 'wr-ew' ),
+                        'icon'  => 'eicon-text-align-right',
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-content' => 'text-align: {{VALUE}};',
+                ],
             ]
         );
 
