@@ -1,8 +1,7 @@
-document.addEventListener('DOMContentLoaded', function () {
+function initWrHeroSlider() {
     const sliders = document.querySelectorAll('.wr-hero-slider-swiper');
 
     sliders.forEach(slider => {
-        // --- Swiper init ---
         new Swiper(slider, {
             loop: true,
             autoplay: {
@@ -20,4 +19,15 @@ document.addEventListener('DOMContentLoaded', function () {
             effect: 'slide',
         });
     });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initWrHeroSlider();
 });
+
+// Elementor editor mode detection
+if (window.elementorFrontend) {
+    window.elementorFrontend.hooks.addAction('frontend/element_ready/wr-hero-slider.default', function () {
+        initWrHeroSlider();
+    });
+}
