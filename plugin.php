@@ -233,18 +233,30 @@ function wr_filter_products() {
         wp_reset_postdata();
     }
 
-    $total_pages = $query->max_num_pages;
+    $total_pages     = $query->max_num_pages;
+    $original_query  = $GLOBALS['wp_query'] ?? null;
+
     if ( $total_pages > 1 ) {
-        echo '<div class="wr-product-pagination">';
-        for ( $i = 1; $i <= $total_pages; $i++ ) {
-            $active = ( $i === $page ) ? ' active' : '';
-            echo '<button type="button" class="wr-page-btn' . $active . '" data-page="' . esc_attr( $i ) . '">' . esc_html( $i ) . '</button>';
-        }
-        if ( $page < $total_pages ) {
-            echo '<button type="button" class="wr-page-btn wr-page-next" data-page="' . esc_attr( $page + 1 ) . '">&rarr;</button>';
-        }
+        $GLOBALS['wp_query'] = $query;
+
+        wc_setup_loop(
+            [
+                'total'        => $query->found_posts,
+                'total_pages'  => $total_pages,
+                'per_page'     => $per_page,
+                'current_page' => $page,
+                'is_paginated' => true,
+            ]
+        );
+
+        echo '<div class="wr-pagination">';
+        woocommerce_pagination();
         echo '</div>';
+
+        wc_reset_loop();
     }
+
+    $GLOBALS['wp_query'] = $original_query;
 
     echo ob_get_clean();
     wp_die();

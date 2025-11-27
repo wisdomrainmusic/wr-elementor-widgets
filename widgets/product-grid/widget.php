@@ -52,7 +52,7 @@ class WR_EW_Product_Grid extends Widget_Base {
         $settings   = $this->get_settings_for_display();
         $columns    = ! empty( $settings['columns'] ) ? $settings['columns'] : '3';
         $per_page   = 12;
-        $paged      = 1;
+        $paged      = max( 1, absint( get_query_var( 'paged' ) ), absint( get_query_var( 'page' ) ) );
 
         $categories = get_terms( [
             'taxonomy'   => 'product_cat',
@@ -74,7 +74,7 @@ class WR_EW_Product_Grid extends Widget_Base {
         echo '</aside>';
 
         // Product grid
-        echo '<div class="wr-product-items" data-page="1" data-per-page="' . esc_attr( $per_page ) . '">';
+        echo '<div class="wr-product-items" data-page="' . esc_attr( $paged ) . '" data-per-page="' . esc_attr( $per_page ) . '">';
 
         $args = [
             'post_type'      => 'product',
@@ -118,19 +118,31 @@ class WR_EW_Product_Grid extends Widget_Base {
             wp_reset_postdata();
         }
 
-        // Pagination
-        $total_pages = $query->max_num_pages;
+        /* Pagination */
+        $total_pages     = $query->max_num_pages;
+        $original_query  = $GLOBALS['wp_query'] ?? null;
+
         if ( $total_pages > 1 ) {
-            echo '<div class="wr-product-pagination">';
-            for ( $i = 1; $i <= $total_pages; $i++ ) {
-                $active = ( $i === $paged ) ? ' active' : '';
-                echo '<button type="button" class="wr-page-btn' . $active . '" data-page="' . esc_attr( $i ) . '">' . esc_html( $i ) . '</button>';
-            }
-            if ( $paged < $total_pages ) {
-                echo '<button type="button" class="wr-page-btn wr-page-next" data-page="' . esc_attr( $paged + 1 ) . '">&rarr;</button>';
-            }
+            $GLOBALS['wp_query'] = $query;
+
+            wc_setup_loop(
+                [
+                    'total'        => $query->found_posts,
+                    'total_pages'  => $total_pages,
+                    'per_page'     => $per_page,
+                    'current_page' => $paged,
+                    'is_paginated' => true,
+                ]
+            );
+
+            echo '<div class="wr-pagination">';
+            woocommerce_pagination();
             echo '</div>';
+
+            wc_reset_loop();
         }
+
+        $GLOBALS['wp_query'] = $original_query;
 
         echo '</div>'; // .wr-product-items
         echo '</div>'; // .wr-product-grid-wrapper
