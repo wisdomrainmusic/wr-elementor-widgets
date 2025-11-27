@@ -16,6 +16,14 @@
 }
 
 /* Overlay katmanı (Elementor'daki Overlay Color bunu override eder) */
+.wr-hero-slide::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: transparent; /* default: no overlay */
+    pointer-events: none;
+}
+
 .wr-hero-slide::after {
     content: "";
     position: absolute;
