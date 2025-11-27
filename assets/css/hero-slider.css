@@ -1,6 +1,7 @@
 .wr-hero-slider-swiper {
     width: 100%;
     position: relative;
+    background: transparent !important;
 }
 
 .wr-hero-slide {
@@ -11,6 +12,7 @@
     background-size: contain !important;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: transparent !important;
 }
 
 /* Overlay katmanı (Elementor'daki Overlay Color bunu override eder) */
