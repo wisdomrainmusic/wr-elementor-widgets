@@ -49,8 +49,10 @@ class WR_EW_Product_Grid extends Widget_Base {
     }
 
     protected function render() {
-        $settings = $this->get_settings_for_display();
-        $columns  = ! empty( $settings['columns'] ) ? $settings['columns'] : '3';
+        $settings   = $this->get_settings_for_display();
+        $columns    = ! empty( $settings['columns'] ) ? $settings['columns'] : '3';
+        $per_page   = 12;
+        $paged      = 1;
 
         $categories = get_terms( [
             'taxonomy'   => 'product_cat',
@@ -59,19 +61,25 @@ class WR_EW_Product_Grid extends Widget_Base {
 
         echo '<div class="wr-product-grid-wrapper" data-columns="' . esc_attr( $columns ) . '">';
 
-        echo '<aside class="wr-filter-sidebar"><ul>';
+        // Sidebar
+        echo '<aside class="wr-filter-sidebar">';
+        echo '<div class="wr-filter-header">' . esc_html__( 'Categories', 'wr-elementor-widgets' ) . '</div>';
+        echo '<ul>';
         if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) {
             foreach ( $categories as $cat ) {
                 echo '<li data-cat="' . esc_attr( $cat->term_id ) . '">' . esc_html( $cat->name ) . '</li>';
             }
         }
-        echo '</ul></aside>';
+        echo '</ul>';
+        echo '</aside>';
 
-        echo '<div class="wr-product-items">';
+        // Product grid
+        echo '<div class="wr-product-items" data-page="1" data-per-page="' . esc_attr( $per_page ) . '">';
 
         $args = [
             'post_type'      => 'product',
-            'posts_per_page' => 12,
+            'posts_per_page' => $per_page,
+            'paged'          => $paged,
         ];
 
         $query = new WP_Query( $args );
@@ -86,17 +94,42 @@ class WR_EW_Product_Grid extends Widget_Base {
                 $product_url = get_permalink();
 
                 echo '<div class="wr-product-item">';
-                echo '<a href="' . esc_url( $product_url ) . '">';
+                echo '<a href="' . esc_url( $product_url ) . '" class="wr-product-link">';
                 echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( get_the_title() ) . '">';
                 echo '<h3>' . esc_html( get_the_title() ) . '</h3>';
                 echo '<span class="price">' . wp_kses_post( $product->get_price_html() ) . '</span>';
                 echo '</a>';
+
+                if ( $product && $product->is_purchasable() && $product->is_in_stock() ) {
+                    echo sprintf(
+                        '<a href="%1$s" data-quantity="1" class="wr-add-to-cart button add_to_cart_button ajax_add_to_cart" data-product_id="%2$s" data-product_sku="%3$s" rel="nofollow">%4$s</a>',
+                        esc_url( $product->add_to_cart_url() ),
+                        esc_attr( $product->get_id() ),
+                        esc_attr( $product->get_sku() ),
+                        esc_html( $product->add_to_cart_text() )
+                    );
+                }
+
                 echo '</div>';
             }
             wp_reset_postdata();
         }
 
-        echo '</div>';
-        echo '</div>';
+        // Pagination
+        $total_pages = $query->max_num_pages;
+        if ( $total_pages > 1 ) {
+            echo '<div class="wr-product-pagination">';
+            for ( $i = 1; $i <= $total_pages; $i++ ) {
+                $active = ( $i === $paged ) ? ' active' : '';
+                echo '<button type="button" class="wr-page-btn' . $active . '" data-page="' . esc_attr( $i ) . '">' . esc_html( $i ) . '</button>';
+            }
+            if ( $paged < $total_pages ) {
+                echo '<button type="button" class="wr-page-btn wr-page-next" data-page="' . esc_attr( $paged + 1 ) . '">&rarr;</button>';
+            }
+            echo '</div>';
+        }
+
+        echo '</div>'; // .wr-product-items
+        echo '</div>'; // .wr-product-grid-wrapper
     }
 }
