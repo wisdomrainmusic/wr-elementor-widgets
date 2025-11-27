@@ -1,3 +1,77 @@
+/* Product Card (Elementor Grid) */
+.wr-product-card {
+    height: 380px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.wr-product-image img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 8px;
+    display: block;
+}
+
+.wr-card-actions {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wr-add-to-cart-btn {
+    display: inline-block;
+    padding: 10px 22px;
+    background: #1a73ff;
+    color: #fff;
+    border-radius: 22px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.wr-product-card .wr-wishlist-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* -------- Responsive Grid Columns -------- */
+
+.wr-product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) {
+    .wr-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .wr-product-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Layout */
 .wr-product-grid-wrapper {
     display: grid;
@@ -283,11 +357,10 @@
     position: absolute;
     top: 14px;
     right: 14px;
-    width: 40px;
-    height: 40px;
     background: #fff;
+    padding: 10px;
     border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     display: flex;
     align-items: center;
     justify-content: center;
