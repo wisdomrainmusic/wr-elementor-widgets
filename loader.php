@@ -140,10 +140,11 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         }
     }
 
-    $product_carousel = WR_EW_PLUGIN_DIR . 'elementor/product-carousel/product-carousel.php';
+    // Register Product Carousel widget manually
+    $product_carousel_file = WR_EW_PLUGIN_DIR . 'widgets/product-carousel/widget.php';
 
-    if ( file_exists( $product_carousel ) ) {
-        require_once $product_carousel;
+    if ( file_exists( $product_carousel_file ) ) {
+        require_once $product_carousel_file;
 
         if ( class_exists( 'WR_Product_Carousel' ) ) {
             $widgets_manager->register( new WR_Product_Carousel() );
