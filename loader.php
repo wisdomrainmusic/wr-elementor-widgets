@@ -56,6 +56,13 @@ add_action('wp_enqueue_scripts', function() {
         '1.0.0'
     );
 
+    wp_enqueue_style(
+        'wr-wishlist-css',
+        WR_EW_PLUGIN_URL . 'assets/css/wishlist.css',
+        [],
+        '1.0.0'
+    );
+
     wp_enqueue_script(
         'wr-product-grid-js',
         WR_EW_PLUGIN_URL . 'assets/js/product-grid.js',
