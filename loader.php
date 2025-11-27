@@ -67,6 +67,13 @@ add_action('wp_enqueue_scripts', function() {
     );
 
     wp_enqueue_style(
+        'wr-product-carousel-css',
+        WR_EW_PLUGIN_URL . 'assets/css/product-carousel.css',
+        [],
+        '1.0.0'
+    );
+
+    wp_enqueue_style(
         'wr-wishlist-css',
         WR_EW_PLUGIN_URL . 'assets/css/wishlist.css',
         [],

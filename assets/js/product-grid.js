@@ -9,6 +9,16 @@ jQuery(function($){
         });
     }
 
+    function getButtonProductId($btn) {
+        var productId = $btn.data('product-id');
+
+        if (typeof productId === 'undefined') {
+            productId = $btn.data('id');
+        }
+
+        return parseInt(productId, 10);
+    }
+
     function getStoredWishlist() {
         var stored = localStorage.getItem('wr_wishlist');
         if (!stored) return [];
@@ -31,7 +41,7 @@ jQuery(function($){
     function applyWishlistState() {
         $('.wr-wishlist-btn').each(function(){
             var $btn = $(this);
-            var id = parseInt($btn.data('id'), 10);
+            var id = getButtonProductId($btn);
             if (wishlistIds.indexOf(id) !== -1) {
                 $btn.addClass('active');
             } else {
@@ -155,7 +165,7 @@ jQuery(function($){
     $(document).on('click', '.wr-wishlist-btn', function(e){
         e.preventDefault();
         var $btn = $(this);
-        var productId = parseInt($btn.data('id'), 10);
+        var productId = getButtonProductId($btn);
 
         if (!productId) return;
 
