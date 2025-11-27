@@ -315,3 +315,66 @@
     stroke: #ff2a85;
     transform: scale(1.15);
 }
+
+/* ============================================================
+   FIX: WooCommerce list bullets + Add to Cart in WR Product Grid
+   ============================================================ */
+
+/* 1) Nokta (•) yapan liste işaretlerini tamamen kaldır */
+.wr-product-items,
+.wr-product-items ul,
+.wr-product-items li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 2) Grid içindeki WooCommerce ürün kartı kapsayıcısı */
+.wr-product-items li.product {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 0 0 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.wr-product-items li.product:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+}
+
+/* 3) Ürün içeriği (başlık, fiyat) – biraz iç padding verelim */
+.wr-product-items li.product .woocommerce-loop-product__link {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    padding: 48px 16px 0;
+    flex: 1 1 auto;
+}
+
+/* 4) Add to cart butonunu geri getir ve düzgün göster */
+.wr-product-items li.product .button {
+    display: inline-block;
+    margin: 8px 16px 0;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    line-height: 1.3;
+    background: #1a73e8;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Hover halinde biraz koyulaşsın */
+.wr-product-items li.product .button:hover {
+    background: #1257b8;
+}
