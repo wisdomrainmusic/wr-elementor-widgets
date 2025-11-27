@@ -81,16 +81,8 @@ add_action('wp_enqueue_scripts', function() {
     );
 
     wp_enqueue_script(
-        'wr-product-grid-js',
-        WR_EW_PLUGIN_URL . 'assets/js/product-grid.js',
-        ['jquery'],
-        '1.0.0',
-        true
-    );
-
-    wp_enqueue_script(
-        'wr-product-grid-ajax',
-        WR_EW_PLUGIN_URL . 'assets/js/wr-product-grid.js',
+        'wr-grid-js',
+        WR_EW_PLUGIN_URL . 'assets/js/wr-grid.js',
         ['jquery'],
         '1.0.0',
         true
@@ -100,20 +92,13 @@ add_action('wp_enqueue_scripts', function() {
     $wishlist_url  = $wishlist_page ? get_permalink( $wishlist_page ) : home_url( '/wishlist/' );
 
     wp_localize_script(
-        'wr-product-grid-js',
-        'wrpg',
+        'wr-grid-js',
+        'wrGridData',
         [
             'ajax_url'     => admin_url( 'admin-ajax.php' ),
+            'nonce'        => wp_create_nonce( 'wr_grid_nonce' ),
             'logged_in'    => is_user_logged_in(),
             'wishlist_url' => $wishlist_url,
-        ]
-    );
-
-    wp_localize_script(
-        'wr-product-grid-ajax',
-        'wr_ajax',
-        [
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
         ]
     );
 });
