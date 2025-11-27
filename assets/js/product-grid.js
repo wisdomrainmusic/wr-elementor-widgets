@@ -129,6 +129,10 @@ jQuery(function($){
 
     // Pagination click
     $(document).on('click', '.wr-pagination .page-numbers a', function(e){
+        if ($(this).closest('#wr-ajax-grid').length) {
+            return;
+        }
+
         e.preventDefault();
 
         var href = $(this).attr('href') || '';
