@@ -64,10 +64,17 @@ add_action('wp_enqueue_scripts', function() {
         true
     );
 
+    $wishlist_page = get_page_by_path( 'wishlist' );
+    $wishlist_url  = $wishlist_page ? get_permalink( $wishlist_page ) : home_url( '/wishlist/' );
+
     wp_localize_script(
         'wr-product-grid-js',
         'wrpg',
-        [ 'ajax_url' => admin_url('admin-ajax.php') ]
+        [
+            'ajax_url'     => admin_url( 'admin-ajax.php' ),
+            'logged_in'    => is_user_logged_in(),
+            'wishlist_url' => $wishlist_url,
+        ]
     );
 });
 

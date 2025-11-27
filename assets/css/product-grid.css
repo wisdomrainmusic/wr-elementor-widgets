@@ -67,6 +67,10 @@
     padding: 0 0 16px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.04);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .wr-product-item:hover {
@@ -75,10 +79,12 @@
 }
 
 .wr-product-link {
-    display: block;
+    display: flex;
+    flex-direction: column;
     text-decoration: none;
     color: inherit;
-    padding: 0 16px;
+    padding: 48px 16px 0;
+    flex: 1 1 auto;
 }
 
 .wr-product-item img {
@@ -102,11 +108,51 @@
 
 /* Add to Cart button */
 .wr-add-to-cart {
-    display: inline-block;
+    display: block;
     margin: 8px 16px 0;
     padding: 6px 16px;
     border-radius: 999px;
     font-size: 14px;
+    margin-top: auto;
+}
+
+.wr-wishlist-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: 0.2s ease;
+    z-index: 10;
+}
+
+.wr-wishlist-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+.wr-heart-icon {
+    width: 20px;
+    height: 20px;
+    fill: #444;
+    transition: 0.2s ease;
+}
+
+.wr-wishlist-btn.active {
+    background: #ff4d4f;
+}
+
+.wr-wishlist-btn.active .wr-heart-icon {
+    fill: #fff;
+    transform: scale(1.1);
 }
 
 /* Skeleton Loader */
@@ -169,6 +215,42 @@
     background: #000;
     color: #fff;
     border-color: #000;
+}
+
+.wr-wishlist-fab {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #000;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    cursor: pointer;
+    z-index: 999;
+}
+
+.wr-fab-heart {
+    font-size: 16px;
+}
+
+.wr-wishlist-count {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.wr-wishlist-grid {
+    display: grid;
+    gap: 30px;
+}
+
+@media (min-width: 768px) {
+    .wr-wishlist-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 /* Responsive */
