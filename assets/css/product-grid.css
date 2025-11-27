@@ -269,17 +269,23 @@
     }
 }
 
-/* Tablet: 2 columns */
+/* ============================================================
+   RESPONSIVE GRID — Correct selectors
+   ============================================================ */
+
+/* Desktop default — no change */
+
+/* Tablet (<=1024px): 2 columns */
 @media (max-width: 1024px) {
-    .wr-product-grid-wrapper {
+    .wr-product-items {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 24px !important;
     }
 }
 
-/* Mobile: 1 column */
+/* Mobile (<=767px): 1 column */
 @media (max-width: 767px) {
-    .wr-product-grid-wrapper {
+    .wr-product-items {
         grid-template-columns: repeat(1, 1fr) !important;
         gap: 28px !important;
     }
@@ -287,12 +293,13 @@
     .wr-product-item img {
         height: 240px !important;
         object-fit: cover !important;
+        width: 100% !important;
     }
 }
 
-/* Small mobile */
+/* Small mobile (<=480px): bigger gap and taller images */
 @media (max-width: 480px) {
-    .wr-product-grid-wrapper {
+    .wr-product-items {
         grid-template-columns: repeat(1, 1fr) !important;
         gap: 32px !important;
     }
