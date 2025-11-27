@@ -180,6 +180,8 @@ function wr_filter_products() {
         exit;
     }
 
+    check_ajax_referer( 'wr_grid_nonce', 'nonce' );
+
     $page = isset( $_POST['page'] ) ? max( 1, intval( $_POST['page'] ) ) : 1;
     $cat  = isset( $_POST['cat'] )  ? absint( $_POST['cat'] )          : 0;
 

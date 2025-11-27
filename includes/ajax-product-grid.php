@@ -8,13 +8,26 @@ add_action( 'wp_ajax_nopriv_wr_ajax_load_products', 'wr_ajax_load_products' );
 
 function wr_ajax_load_products() {
 
+    check_ajax_referer( 'wr_grid_nonce', 'nonce' );
+
     $page = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
+    $cat  = isset( $_POST['cat'] ) ? absint( $_POST['cat'] )  : 0;
 
     $args = [
         'post_type'      => 'product',
         'posts_per_page' => 12,
         'paged'          => $page,
     ];
+
+    if ( $cat ) {
+        $args['tax_query'] = [
+            [
+                'taxonomy' => 'product_cat',
+                'field'    => 'term_id',
+                'terms'    => $cat,
+            ],
+        ];
+    }
 
     $query = new WP_Query( $args );
 
