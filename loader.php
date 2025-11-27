@@ -48,6 +48,27 @@ add_action('wp_enqueue_scripts', function() {
         '1.0.0',
         true
     );
+
+    wp_enqueue_style(
+        'wr-product-grid-css',
+        WR_EW_PLUGIN_URL . 'assets/css/product-grid.css',
+        [],
+        '1.0.0'
+    );
+
+    wp_enqueue_script(
+        'wr-product-grid-js',
+        WR_EW_PLUGIN_URL . 'assets/js/product-grid.js',
+        ['jquery'],
+        '1.0.0',
+        true
+    );
+
+    wp_localize_script(
+        'wr-product-grid-js',
+        'wrpg',
+        [ 'ajax_url' => admin_url('admin-ajax.php') ]
+    );
 });
 
 add_action( 'elementor/widgets/register', function( $widgets_manager ) {
