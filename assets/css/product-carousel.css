@@ -61,3 +61,45 @@
     background: #ff007a;
     color: #fff;
 }
+
+/* --- Wishlist Top-Right Button --- */
+.wr-carousel-card {
+    position: relative; /* IMPORTANT: Allows absolute wishlist positioning */
+}
+
+.wr-carousel-wishlist {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 44px;
+    height: 44px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.25s ease;
+    z-index: 5;
+}
+
+/* Heart Icon */
+.wr-carousel-wishlist svg {
+    width: 20px;
+    height: 20px;
+    stroke: #444;
+    fill: none;
+    transition: 0.25s ease;
+}
+
+/* Hover state */
+.wr-carousel-wishlist:hover svg {
+    stroke: #ff2a85;
+}
+
+/* Active wishlist item */
+.wr-carousel-wishlist.active svg {
+    stroke: #fff;
+    fill: #ff2a85;
+}
