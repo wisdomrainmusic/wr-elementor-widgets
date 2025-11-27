@@ -51,12 +51,13 @@ add_action('wp_enqueue_scripts', function() {
     );
 });
 
+require_once __DIR__ . '/widgets/category-grid/widget.php';
+
 // Register widgets loader.
 function wr_ew_register_widgets( $widgets_manager ) {
 
     $widget_dirs = [
         'hero-slider',
-        'category-grid',
         'product-grid',
         'product-carousel',
         'category-slider',
@@ -66,6 +67,10 @@ function wr_ew_register_widgets( $widgets_manager ) {
         'campaign-bar',
         'blog-grid'
     ];
+
+    if ( class_exists( '\\WR_EW_Category_Grid' ) ) {
+        $widgets_manager->register( new WR_EW_Category_Grid() );
+    }
 
     foreach ( $widget_dirs as $widget ) {
 
