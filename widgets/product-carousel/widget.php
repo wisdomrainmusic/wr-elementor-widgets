@@ -47,12 +47,36 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
             'description' => __('Leave empty to show all products.', 'wr-ecom'),
         ]);
 
+        // Product Tags
+        $this->add_control('product_tags', [
+            'label' => __('Product Tags', 'wr-ecom'),
+            'type' => \Elementor\Controls_Manager::SELECT2,
+            'multiple' => true,
+            'options' => $this->get_product_tags(),
+            'description' => __('Leave empty to ignore tag filtering.', 'wr-ecom'),
+        ]);
+
         $this->end_controls_section();
     }
 
     private function get_product_categories() {
         $terms = get_terms([
             'taxonomy' => 'product_cat',
+            'hide_empty' => false,
+        ]);
+
+        $options = [];
+        if ($terms && !is_wp_error($terms)) {
+            foreach ($terms as $term) {
+                $options[$term->slug] = $term->name;
+            }
+        }
+        return $options;
+    }
+
+    private function get_product_tags() {
+        $terms = get_terms([
+            'taxonomy' => 'product_tag',
             'hide_empty' => false,
         ]);
 
@@ -75,15 +99,26 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
             'post_status'    => 'publish',
         ];
 
-        // Category filter
+        $tax_query = [];
+
         if ( ! empty($settings['product_categories']) ) {
-            $args['tax_query'] = [
-                [
-                    'taxonomy' => 'product_cat',
-                    'field'    => 'slug',
-                    'terms'    => $settings['product_categories'],
-                ],
+            $tax_query[] = [
+                'taxonomy' => 'product_cat',
+                'field'    => 'slug',
+                'terms'    => $settings['product_categories'],
             ];
+        }
+
+        if ( ! empty($settings['product_tags']) ) {
+            $tax_query[] = [
+                'taxonomy' => 'product_tag',
+                'field'    => 'slug',
+                'terms'    => $settings['product_tags'],
+            ];
+        }
+
+        if ( ! empty($tax_query) ) {
+            $args['tax_query'] = $tax_query;
         }
 
         $loop = new WP_Query($args);
