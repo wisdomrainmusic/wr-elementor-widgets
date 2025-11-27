@@ -63,3 +63,36 @@
     background: #ff3b3b;
     color: #fff;
 }
+
+/* Tablet: 2 columns */
+@media (max-width: 1024px) {
+    .wr-wishlist-wrapper {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 24px !important;
+    }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 767px) {
+    .wr-wishlist-wrapper {
+        grid-template-columns: repeat(1, 1fr) !important;
+        gap: 28px !important;
+    }
+
+    .wr-wishlist-item img {
+        height: 240px !important;
+        object-fit: cover !important;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .wr-wishlist-wrapper {
+        grid-template-columns: repeat(1, 1fr) !important;
+        gap: 32px !important;
+    }
+
+    .wr-wishlist-item img {
+        height: 260px !important;
+    }
+}
