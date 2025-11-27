@@ -128,9 +128,13 @@ jQuery(function($){
     });
 
     // Pagination click
-    $(document).on('click', '.wr-product-pagination .wr-page-btn', function(e){
+    $(document).on('click', '.wr-pagination .page-numbers a', function(e){
         e.preventDefault();
-        var page = $(this).data('page') || 1;
+
+        var href = $(this).attr('href') || '';
+        var pageMatch = href.match(/(?:paged=|page\/)(\d+)/);
+        var page = pageMatch ? parseInt(pageMatch[1], 10) : 1;
+
         var $activeCat = $('.wr-filter-sidebar li.active');
         var cat = $activeCat.length ? $activeCat.data('cat') : 0;
 
