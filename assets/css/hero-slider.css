@@ -1,7 +1,7 @@
 .wr-hero-slider-swiper {
     width: 100%;
     position: relative;
-    background: transparent !important;
+    background-color: transparent !important;
 }
 
 .wr-hero-slide {
@@ -9,7 +9,7 @@
     width: 100%;
     overflow: hidden;
     height: 550px;
-    background-size: cover !important;
+    background-size: contain !important;
     background-position: center;
     background-repeat: no-repeat;
     background-color: transparent !important;
