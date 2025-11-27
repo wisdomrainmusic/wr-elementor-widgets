@@ -1,3 +1,54 @@
+/* ------------------------------
+   WR – UI Polish Pack
+   1) Price stabilization
+   2) Product title height fix
+   3) Wishlist button fine alignment
+   4) Add to cart hover animation
+--------------------------------- */
+
+/* 1) PRICE AREA STABILIZATION */
+.wr-product-card .wr-product-price {
+    min-height: 26px;                 /* Tek fiyat için ideal alan */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2) PRODUCT TITLE STABILIZATION */
+.wr-product-card .wr-product-title {
+    min-height: 22px;                  /* 1 satırlık sabit yükseklik */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* 3) WISHLIST BUTTON POSITION FIX */
+.wr-product-card .wr-wishlist-btn {
+    top: 10px !important;              /* Biraz daha yukarı */
+    right: 10px !important;            /* Tam köşeye yasla */
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 4) ADD TO CART HOVER ANIMATION */
+.wr-product-card .wr-add-to-cart-btn,
+.wr-product-card a.button,
+.wr-product-card .button {
+    transition: all .25s ease;
+    transform: translateY(0);
+}
+
+.wr-product-card .wr-add-to-cart-btn:hover,
+.wr-product-card a.button:hover,
+.wr-product-card .button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
 /* Product Card (Elementor Grid) */
 .wr-product-card {
     height: 380px;
