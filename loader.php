@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Elementor init.
-add_action( 'elementor/widgets/register', 'wr_ew_register_widgets' );
 add_action( 'elementor/elements/categories_registered', 'wr_ew_register_category' );
 
 // Register custom category.
@@ -51,13 +50,11 @@ add_action('wp_enqueue_scripts', function() {
     );
 });
 
-require_once __DIR__ . '/widgets/category-grid/widget.php';
-
-// Register widgets loader.
-function wr_ew_register_widgets( $widgets_manager ) {
+add_action( 'elementor/widgets/register', function( $widgets_manager ) {
 
     $widget_dirs = [
         'hero-slider',
+        'category-grid',
         'product-grid',
         'product-carousel',
         'category-slider',
@@ -65,24 +62,21 @@ function wr_ew_register_widgets( $widgets_manager ) {
         'icon-box',
         'testimonials',
         'campaign-bar',
-        'blog-grid'
+        'blog-grid',
     ];
-
-    if ( class_exists( '\\WR_EW_Category_Grid' ) ) {
-        $widgets_manager->register( new WR_EW_Category_Grid() );
-    }
 
     foreach ( $widget_dirs as $widget ) {
 
-        $widget_file = WR_EW_PLUGIN_DIR . 'widgets/' . $widget . '/' . $widget . '.php';
+        $file = WR_EW_PLUGIN_DIR . 'widgets/' . $widget . '/widget.php';
 
-        if ( file_exists( $widget_file ) ) {
-            require_once $widget_file;
+        if ( file_exists( $file ) ) {
+            require_once $file;
 
             $class_name = 'WR_EW_' . str_replace( '-', '_', ucwords( $widget, '-' ) );
+
             if ( class_exists( $class_name ) ) {
                 $widgets_manager->register( new $class_name() );
             }
         }
     }
-}
+} );
