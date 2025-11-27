@@ -1,32 +1,40 @@
-/* ------------------------------
-   WR – UI Polish Pack
-   1) Price stabilization
-   2) Product title height fix
-   3) Wishlist button fine alignment
-   4) Add to cart hover animation
---------------------------------- */
+/* ------------------------------------------
+     WR — UHLS v1 (Universal Height Lock System)
+     Applies to ALL product grid cards
+------------------------------------------- */
 
-/* 1) PRICE AREA STABILIZATION */
-.wr-product-card .wr-product-price {
-    min-height: 26px;                 /* Tek fiyat için ideal alan */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* FIX 1 — IMAGE FIXED HEIGHT (universal) */
+.wr-product-card .wr-product-image img {
+    width: 100%;
+    height: 200px !important;          /* Tüm resimler aynı yükseklikte */
+    object-fit: contain !important;    /* Ürün bozulmaz, taşmaz */
+    object-position: center !important;
+    border-radius: 8px;
+    display: block;
 }
 
-/* 2) PRODUCT TITLE STABILIZATION */
+/* FIX 2 — TITLE AREA STABILIZATION */
 .wr-product-card .wr-product-title {
-    min-height: 22px;                  /* 1 satırlık sabit yükseklik */
+    min-height: 42px !important;       /* 2 satırlık sabit alan */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+}
+
+/* FIX 3 — PRICE AREA LOCK */
+.wr-product-card .wr-product-price {
+    min-height: 28px !important;        /* 1 satır sabit */
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
 }
 
-/* 3) WISHLIST BUTTON POSITION FIX */
+/* FIX 4 — WISHLIST BUTTON ALIGNMENT */
 .wr-product-card .wr-wishlist-btn {
-    top: 10px !important;              /* Biraz daha yukarı */
-    right: 10px !important;            /* Tam köşeye yasla */
+    top: 10px !important;
+    right: 10px !important;
     width: 40px;
     height: 40px;
     display: flex;
@@ -34,10 +42,11 @@
     justify-content: center;
 }
 
-/* 4) ADD TO CART HOVER ANIMATION */
+/* FIX 5 — ADD TO CART ALWAYS BOTTOM */
 .wr-product-card .wr-add-to-cart-btn,
 .wr-product-card a.button,
 .wr-product-card .button {
+    margin-top: auto !important;     /* BOTTOM FIX */
     transition: all .25s ease;
     transform: translateY(0);
 }
@@ -91,8 +100,8 @@
 
 .wr-product-card .wr-wishlist-btn {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 10px !important;
+    right: 10px !important;
     background: #fff;
     padding: 10px;
     border-radius: 50%;
