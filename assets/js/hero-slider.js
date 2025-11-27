@@ -21,13 +21,36 @@ function initWrHeroSlider() {
     });
 }
 
+// Normal sayfada çalıştır
 document.addEventListener('DOMContentLoaded', function () {
     initWrHeroSlider();
 });
 
-// Elementor editor mode detection
+// Elementor Editor Modu İçin Zorunlu Hooklar
 if (window.elementorFrontend) {
-    window.elementorFrontend.hooks.addAction('frontend/element_ready/wr-hero-slider.default', function () {
-        initWrHeroSlider();
-    });
+
+    const initHandler = function () {
+        // Elementor widget render sonrası boyutlar otursun diye gecikme
+        setTimeout(() => {
+            initWrHeroSlider();
+        }, 150);
+    };
+
+    // 1) Normal widget load
+    window.elementorFrontend.hooks.addAction(
+        'frontend/element_ready/wr-hero-slider.default',
+        initHandler
+    );
+
+    // 2) Global widget load
+    window.elementorFrontend.hooks.addAction(
+        'frontend/element_ready/wr-hero-slider.global',
+        initHandler
+    );
+
+    // 3) En kritik olan: widget'ın kendi ID'si
+    window.elementorFrontend.hooks.addAction(
+        'frontend/element_ready/wr-hero-slider.wr-hero-slider',
+        initHandler
+    );
 }
