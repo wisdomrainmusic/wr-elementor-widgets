@@ -25,7 +25,8 @@ function wr_ajax_load_products() {
         if ( $query->have_posts() ) {
             while ( $query->have_posts() ) {
                 $query->the_post();
-                wc_get_template( 'content-product.php', [], '', WR_EW_PLUGIN_DIR . 'templates/' );
+                // Load custom WR product card
+                include WR_EW_PLUGIN_DIR . 'widgets/product-grid/card.php';
             }
         }
         ?>
