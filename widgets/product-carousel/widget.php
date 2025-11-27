@@ -96,19 +96,19 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
                 <?php while ($loop->have_posts()) : $loop->the_post(); global $product; ?>
 
                 <div class="swiper-slide">
-                    <div class="wr-product-card">
+                    <div class="wr-carousel-card">
 
-                        <div class="wr-product-image">
+                        <div class="wr-carousel-image">
                             <?php echo $product->get_image('medium'); ?>
                         </div>
 
-                        <h3 class="wr-product-title"><?php the_title(); ?></h3>
+                        <h3 class="wr-carousel-title"><?php the_title(); ?></h3>
 
-                        <div class="wr-product-price">
+                        <div class="wr-carousel-price">
                             <?php echo $product->get_price_html(); ?>
                         </div>
 
-                        <div class="wr-card-actions">
+                        <div class="wr-carousel-actions">
 
                             <!-- ADD TO CART -->
                             <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
@@ -117,7 +117,8 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
                             </a>
 
                             <!-- WISHLIST -->
-                            <div class="wr-wishlist-btn" data-product-id="<?php echo get_the_ID(); ?>">
+                            <div class="wr-carousel-wishlist wr-wishlist-btn"
+                                 data-product-id="<?php echo get_the_ID(); ?>">
                                 <i class="wr-heart-icon"></i>
                             </div>
 
@@ -140,7 +141,7 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
         document.addEventListener("DOMContentLoaded", function() {
             new Swiper(".wr-product-carousel", {
                 slidesPerView: 4,
-                spaceBetween: 20,
+                spaceBetween: 24,
                 loop: true,
                 navigation: {
                     nextEl: ".wr-carousel-next",
@@ -150,6 +151,24 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
                     el: ".swiper-pagination",
                     clickable: true,
                 },
+                breakpoints: {
+                    0: {
+                        slidesPerView: 1,
+                        spaceBetween: 16,
+                    },
+                    640: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    992: {
+                        slidesPerView: 3,
+                        spaceBetween: 24,
+                    },
+                    1200: {
+                        slidesPerView: 4,
+                        spaceBetween: 24,
+                    }
+                }
             });
         });
         </script>
