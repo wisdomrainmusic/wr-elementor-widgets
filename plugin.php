@@ -18,9 +18,7 @@ require_once WR_EW_PLUGIN_DIR . 'loader.php';
 
 add_action( 'wp_ajax_wr_filter_products', 'wr_filter_products' );
 add_action( 'wp_ajax_nopriv_wr_filter_products', 'wr_filter_products' );
-add_action( 'wp_ajax_wr_add_to_wishlist', 'wr_add_to_wishlist' );
-add_action( 'wp_ajax_wr_remove_from_wishlist', 'wr_remove_from_wishlist' );
-add_action( 'wp_ajax_wr_get_wishlist', 'wr_get_wishlist' );
+add_action( 'wp_ajax_wr_update_wishlist', 'wr_update_wishlist' );
 add_shortcode( 'wr_wishlist', 'wr_wishlist_shortcode' );
 add_action( 'wp_footer', 'wr_render_wishlist_fab' );
 
@@ -50,53 +48,50 @@ function wr_save_user_wishlist_ids( $ids ) {
     update_user_meta( $user_id, 'wr_wishlist', $ids );
 }
 
-function wr_add_to_wishlist() {
+function wr_update_wishlist() {
     if ( ! is_user_logged_in() ) {
         wp_send_json_error( [ 'message' => 'Unauthorized' ], 401 );
     }
 
-    $product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
-
-    if ( $product_id <= 0 ) {
-        wp_send_json_error( [ 'message' => 'Invalid product' ], 400 );
-    }
-
-    $wishlist   = wr_get_user_wishlist_ids();
-    $wishlist[] = $product_id;
-
-    wr_save_user_wishlist_ids( $wishlist );
-
-    wp_send_json( wr_get_user_wishlist_ids() );
-}
-
-function wr_remove_from_wishlist() {
-    if ( ! is_user_logged_in() ) {
-        wp_send_json_error( [ 'message' => 'Unauthorized' ], 401 );
-    }
+    check_ajax_referer( 'wr_grid_nonce', 'nonce' );
 
     $product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
-
-    if ( $product_id <= 0 ) {
-        wp_send_json_error( [ 'message' => 'Invalid product' ], 400 );
-    }
+    $operation  = isset( $_POST['operation'] ) ? sanitize_text_field( wp_unslash( $_POST['operation'] ) ) : '';
+    $local_ids  = isset( $_POST['local_ids'] ) ? (array) $_POST['local_ids'] : [];
 
     $wishlist = wr_get_user_wishlist_ids();
-    $wishlist = array_filter(
-        $wishlist,
-        function( $id ) use ( $product_id ) {
-            return intval( $id ) !== $product_id;
+
+    if ( ! empty( $local_ids ) ) {
+        $wishlist = array_merge( $wishlist, array_map( 'intval', $local_ids ) );
+    }
+
+    if ( $product_id > 0 ) {
+        if ( 'remove' === $operation ) {
+            $wishlist = array_filter(
+                $wishlist,
+                function ( $id ) use ( $product_id ) {
+                    return intval( $id ) !== $product_id;
+                }
+            );
+        } elseif ( 'toggle' === $operation ) {
+            if ( in_array( $product_id, $wishlist, true ) ) {
+                $wishlist = array_filter(
+                    $wishlist,
+                    function ( $id ) use ( $product_id ) {
+                        return intval( $id ) !== $product_id;
+                    }
+                );
+            } else {
+                $wishlist[] = $product_id;
+            }
+        } else {
+            $wishlist[] = $product_id;
         }
-    );
+    }
+
+    $wishlist = array_values( array_unique( array_map( 'intval', $wishlist ) ) );
 
     wr_save_user_wishlist_ids( $wishlist );
-
-    wp_send_json( wr_get_user_wishlist_ids() );
-}
-
-function wr_get_wishlist() {
-    if ( ! is_user_logged_in() ) {
-        wp_send_json_error( [ 'message' => 'Unauthorized' ], 401 );
-    }
 
     wp_send_json( wr_get_user_wishlist_ids() );
 }
@@ -135,7 +130,7 @@ function wr_wishlist_shortcode() {
             $product_url = get_permalink();
 
             echo '<div class="wr-product-item">';
-            echo '<button class="wr-wishlist-btn" data-id="' . get_the_ID() . '">';
+            echo '<button class="wr-wishlist-btn" data-product-id="' . get_the_ID() . '">';
             echo '<svg class="wr-heart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-5.052-3.21-8.106-6.264C2.108 13.95 1 12.486 1 10.75 1 8.678 2.678 7 4.75 7c1.264 0 2.493.593 3.25 1.528C8.757 7.593 9.986 7 11.25 7 13.322 7 15 8.678 15 10.75c0 1.736-1.108 3.2-2.894 3.986C13.052 17.79 12 21 12 21z"/></svg>';
             echo '</button>';
             echo '<a href="' . esc_url( $product_url ) . '" class="wr-product-link">';

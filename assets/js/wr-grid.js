@@ -4,84 +4,6 @@
     var config = window.wrGridData || {};
     var gridSelector = '[data-widget="product-grid"]';
     var paginationSelector = gridSelector + ' .wr-pagination a';
-    var wishlistIds = [];
-
-    function normalizeIds(ids) {
-        return $.map(ids, function(id) {
-            id = parseInt(id, 10);
-            return isNaN(id) ? null : id;
-        });
-    }
-
-    function getButtonProductId($btn) {
-        var productId = $btn.data('product-id');
-
-        if (typeof productId === 'undefined') {
-            productId = $btn.data('id');
-        }
-
-        return parseInt(productId, 10);
-    }
-
-    function getStoredWishlist() {
-        var stored = localStorage.getItem('wr_wishlist');
-        if (!stored) return [];
-
-        try {
-            var parsed = JSON.parse(stored);
-            return Array.isArray(parsed) ? normalizeIds(parsed) : [];
-        } catch (e) {
-            return [];
-        }
-    }
-
-    function saveLocalWishlist() {
-        localStorage.setItem('wr_wishlist', JSON.stringify(wishlistIds));
-    }
-
-    function updateWishlistCount() {
-        $('.wr-wishlist-count').text(wishlistIds.length);
-    }
-
-    function applyWishlistState($scope) {
-        var $context = $scope && $scope.length ? $scope : $(gridSelector);
-        var $buttons = $context.find('.wr-wishlist-btn');
-
-        $buttons.each(function() {
-            var $btn = $(this);
-            var id = getButtonProductId($btn);
-            if (wishlistIds.indexOf(id) !== -1) {
-                $btn.addClass('active');
-            } else {
-                $btn.removeClass('active');
-            }
-        });
-
-        updateWishlistCount();
-    }
-
-    function fetchWishlist() {
-        if (!config.logged_in) return;
-
-        $.post(config.ajax_url, { action: 'wr_get_wishlist' }, function(response) {
-            if ($.isArray(response)) {
-                wishlistIds = normalizeIds(response);
-                applyWishlistState();
-            }
-        });
-    }
-
-    function addWishlistId(id) {
-        if (wishlistIds.indexOf(id) === -1) {
-            wishlistIds.push(id);
-        }
-    }
-
-    function removeWishlistId(id) {
-        wishlistIds = wishlistIds.filter(function(item) {
-            return item !== id;
-        });
-    }
 
     function buildSkeleton(count) {
         var html = '';
@@ -128,6 +50,13 @@
         return isNaN(textNumber) ? 1 : textNumber;
     }
 
+    function applyWishlist($root) {
+        if (window.wrWishlist) {
+            window.wrWishlist.applyState($root);
+            window.wrWishlist.bind($root);
+        }
+    }
+
     function loadFilteredProducts($grid, cat, page) {
         if (!$grid.length || !config.ajax_url) return;
 
@@ -154,7 +83,7 @@
                     .html(response)
                     .fadeIn(150);
 
-                applyWishlistState($grid);
+                applyWishlist($grid);
             },
             error: function() {
                 $items.removeClass('is-loading');
@@ -181,19 +110,12 @@
                     .removeClass('wr-loading')
                     .html(html);
 
-                applyWishlistState($grid);
+                applyWishlist($grid);
             },
             error: function() {
                 $grid.removeClass('wr-loading');
             }
         });
-    }
-
-    if (config.logged_in) {
-        fetchWishlist();
-    } else {
-        wishlistIds = getStoredWishlist();
-        applyWishlistState();
     }
 
     $(document).on('click', '.wr-filter-sidebar li[data-cat]', function() {
@@ -232,37 +154,4 @@
         $header.toggleClass('is-open');
         $header.siblings('ul').slideToggle(150);
     });
-
-    $(document).on('click', gridSelector + ' .wr-wishlist-btn', function(e) {
-        e.preventDefault();
-        var $btn = $(this);
-        var productId = getButtonProductId($btn);
-
-        if (!productId) return;
-
-        if (config.logged_in) {
-            var action = $btn.hasClass('active') ? 'wr_remove_from_wishlist' : 'wr_add_to_wishlist';
-
-            $.post(config.ajax_url, { action: action, product_id: productId }, function(response) {
-                if ($.isArray(response)) {
-                    wishlistIds = normalizeIds(response);
-                    applyWishlistState(getWidgetGrid($btn));
-                }
-            });
-        } else {
-            if ($btn.hasClass('active')) {
-                removeWishlistId(productId);
-            } else {
-                addWishlistId(productId);
-            }
-
-            saveLocalWishlist();
-            applyWishlistState(getWidgetGrid($btn));
-        }
-    });
-
-    $(document).on('wr:sync-wishlist', function() {
-        applyWishlistState();
-    });
-
 })(jQuery);
