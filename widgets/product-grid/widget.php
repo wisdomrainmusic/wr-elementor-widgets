@@ -49,32 +49,54 @@ class WR_EW_Product_Grid extends Widget_Base {
     }
 
     protected function render() {
-        $settings   = $this->get_settings_for_display();
-        $columns    = ! empty( $settings['columns'] ) ? $settings['columns'] : '3';
-        $categories = get_terms( 'product_cat' );
+        $settings = $this->get_settings_for_display();
+        $columns  = ! empty( $settings['columns'] ) ? $settings['columns'] : '3';
 
-        echo '<div class="wr-product-grid">';
+        $categories = get_terms( [
+            'taxonomy'   => 'product_cat',
+            'hide_empty' => false,
+        ] );
 
-        echo '<aside class="wr-filter-sidebar">';
-        echo '<ul>';
+        echo '<div class="wr-product-grid-wrapper" data-columns="' . esc_attr( $columns ) . '">';
 
-        if ( ! is_wp_error( $categories ) && ! empty( $categories ) ) {
-            foreach ( $categories as $category ) {
-                printf(
-                    '<li data-cat="%1$s">%2$s</li>',
-                    esc_attr( $category->term_id ),
-                    esc_html( $category->name )
-                );
+        echo '<aside class="wr-filter-sidebar"><ul>';
+        if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) {
+            foreach ( $categories as $cat ) {
+                echo '<li data-cat="' . esc_attr( $cat->term_id ) . '">' . esc_html( $cat->name ) . '</li>';
             }
         }
+        echo '</ul></aside>';
 
-        echo '</ul>';
-        echo '</aside>';
+        echo '<div class="wr-product-items">';
 
-        printf( '<div class="wr-product-items" data-columns="%s">', esc_attr( $columns ) );
-        echo '<p>Grid Products Placeholder</p>';
+        $args = [
+            'post_type'      => 'product',
+            'posts_per_page' => 12,
+        ];
+
+        $query = new WP_Query( $args );
+
+        if ( $query->have_posts() ) {
+            while ( $query->have_posts() ) {
+                $query->the_post();
+
+                $product     = wc_get_product( get_the_ID() );
+                $image_url   = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
+                $image_url   = $image_url ? $image_url : wc_placeholder_img_src();
+                $product_url = get_permalink();
+
+                echo '<div class="wr-product-item">';
+                echo '<a href="' . esc_url( $product_url ) . '">';
+                echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( get_the_title() ) . '">';
+                echo '<h3>' . esc_html( get_the_title() ) . '</h3>';
+                echo '<span class="price">' . wp_kses_post( $product->get_price_html() ) . '</span>';
+                echo '</a>';
+                echo '</div>';
+            }
+            wp_reset_postdata();
+        }
+
         echo '</div>';
-
         echo '</div>';
     }
 }
