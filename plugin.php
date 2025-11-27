@@ -121,35 +121,15 @@ function wr_wishlist_shortcode() {
     echo '<div class="wr-wishlist-grid">';
 
     if ( $query->have_posts() ) {
+        global $product;
+
         while ( $query->have_posts() ) {
             $query->the_post();
 
-            $product     = wc_get_product( get_the_ID() );
-            $image_url   = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
-            $image_url   = $image_url ? $image_url : wc_placeholder_img_src();
-            $product_url = get_permalink();
+            $product         = wc_get_product( get_the_ID() );
+            $wr_card_context = 'wishlist';
 
-            echo '<div class="wr-product-item">';
-            echo '<button class="wr-wishlist-btn" data-product-id="' . get_the_ID() . '">';
-            echo '<svg class="wr-heart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-5.052-3.21-8.106-6.264C2.108 13.95 1 12.486 1 10.75 1 8.678 2.678 7 4.75 7c1.264 0 2.493.593 3.25 1.528C8.757 7.593 9.986 7 11.25 7 13.322 7 15 8.678 15 10.75c0 1.736-1.108 3.2-2.894 3.986C13.052 17.79 12 21 12 21z"/></svg>';
-            echo '</button>';
-            echo '<a href="' . esc_url( $product_url ) . '" class="wr-product-link">';
-            echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( get_the_title() ) . '">';
-            echo '<h3>' . esc_html( get_the_title() ) . '</h3>';
-            echo '<span class="price">' . wp_kses_post( $product->get_price_html() ) . '</span>';
-            echo '</a>';
-
-            if ( $product && $product->is_purchasable() && $product->is_in_stock() ) {
-                echo sprintf(
-                    '<a href="%1$s" data-quantity="1" class="button add_to_cart_button ajax_add_to_cart" data-product_id="%2$s" data-product_sku="%3$s" rel="nofollow">%4$s</a>',
-                    esc_url( $product->add_to_cart_url() ),
-                    esc_attr( $product->get_id() ),
-                    esc_attr( $product->get_sku() ),
-                    esc_html( $product->add_to_cart_text() )
-                );
-            }
-
-            echo '</div>';
+            include WR_EW_PLUGIN_DIR . 'widgets/product-grid/card.php';
         }
         wp_reset_postdata();
     }

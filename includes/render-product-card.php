@@ -13,28 +13,23 @@ if ( ! function_exists( 'wr_render_product_card' ) ) {
         }
 
         $context_class = $context ? ' wr-context-' . sanitize_html_class( $context ) : '';
+        $product_link  = $product->get_permalink();
         ?>
         <div class="wr-product-card<?php echo esc_attr( $context_class ); ?>">
 
-            <?php do_action( 'woocommerce_before_shop_loop_item_title' ); ?>
-
-            <div class="wr-product-image">
-                <a href="<?php the_permalink(); ?>" class="wr-product-link">
+            <a href="<?php echo esc_url( $product_link ); ?>" class="wr-product-link">
+                <div class="wr-product-image">
                     <?php echo $product->get_image( 'medium' ); ?>
-                </a>
-            </div>
+                </div>
 
-            <h3 class="wr-product-title">
-                <a href="<?php the_permalink(); ?>" class="wr-product-link">
+                <h3 class="wr-product-title">
                     <?php echo esc_html( $product->get_name() ); ?>
-                </a>
-            </h3>
+                </h3>
+            </a>
 
             <div class="wr-product-price">
                 <?php echo wp_kses_post( $product->get_price_html() ); ?>
             </div>
-
-            <?php do_action( 'woocommerce_after_shop_loop_item_title' ); ?>
 
             <div class="wr-card-actions">
                 <button
@@ -55,8 +50,6 @@ if ( ! function_exists( 'wr_render_product_card' ) ) {
                     <?php echo esc_html( $product->add_to_cart_text() ); ?>
                 </a>
             </div>
-
-            <?php do_action( 'woocommerce_after_shop_loop_item' ); ?>
         </div>
         <?php
     }
