@@ -62,7 +62,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'icon-box',
         'testimonials',
         'campaign-bar',
-        'blog-grid',
+        'blog-grid'
     ];
 
     foreach ( $widget_dirs as $widget ) {
