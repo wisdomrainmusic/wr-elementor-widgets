@@ -15,6 +15,14 @@ function wr_ew_register_category( $elements_manager ) {
             'icon'  => 'fa fa-plug',
         ]
     );
+
+    $elements_manager->add_category(
+        'wr-ecommerce-elements',
+        [
+            'title' => __( 'WR Ecommerce Elements', 'wr-ew' ),
+            'icon'  => 'eicon-woocommerce',
+        ]
+    );
 }
 
 // Enqueue Swiper & custom slider assets
@@ -109,7 +117,6 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'hero-slider',
         'category-grid',
         'product-grid',
-        'product-carousel',
         'category-slider',
         'banner',
         'icon-box',
@@ -130,6 +137,16 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
             if ( class_exists( $class_name ) ) {
                 $widgets_manager->register( new $class_name() );
             }
+        }
+    }
+
+    $product_carousel = WR_EW_PLUGIN_DIR . 'elementor/product-carousel/product-carousel.php';
+
+    if ( file_exists( $product_carousel ) ) {
+        require_once $product_carousel;
+
+        if ( class_exists( 'WR_Product_Carousel' ) ) {
+            $widgets_manager->register( new WR_Product_Carousel() );
         }
     }
 } );
