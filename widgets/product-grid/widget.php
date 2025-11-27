@@ -51,8 +51,6 @@ class WR_EW_Product_Grid extends Widget_Base {
     protected function render() {
         $settings   = $this->get_settings_for_display();
         $columns    = ! empty( $settings['columns'] ) ? $settings['columns'] : '3';
-        $per_page   = 12;
-        $paged      = max( 1, absint( get_query_var( 'paged' ) ), absint( get_query_var( 'page' ) ) );
 
         $categories = get_terms( [
             'taxonomy'   => 'product_cat',
@@ -73,78 +71,46 @@ class WR_EW_Product_Grid extends Widget_Base {
         echo '</ul>';
         echo '</aside>';
 
-        // Product grid
-        echo '<div class="wr-product-items" data-page="' . esc_attr( $paged ) . '" data-per-page="' . esc_attr( $per_page ) . '">';
+        ?>
+        <div id="wr-ajax-grid"
+             data-widget="product-grid"
+             data-columns="<?php echo esc_attr( $columns ); ?>">
 
-        $args = [
-            'post_type'      => 'product',
-            'posts_per_page' => $per_page,
-            'paged'          => $paged,
-        ];
+            <div class="wr-product-items">
+                <?php
+                $paged = max( 1, absint( get_query_var( 'paged' ) ), absint( get_query_var( 'page' ) ) );
+                $args  = [
+                    'post_type'      => 'product',
+                    'posts_per_page' => 12,
+                    'paged'          => $paged,
+                ];
+                $query = new WP_Query( $args );
 
-        $query = new WP_Query( $args );
-
-        if ( $query->have_posts() ) {
-            while ( $query->have_posts() ) {
-                $query->the_post();
-
-                $product     = wc_get_product( get_the_ID() );
-                $image_url   = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
-                $image_url   = $image_url ? $image_url : wc_placeholder_img_src();
-                $product_url = get_permalink();
-
-                echo '<div class="wr-product-item">';
-                echo '<button class="wr-wishlist-btn" data-id="' . get_the_ID() . '">';
-                echo '<svg class="wr-heart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-5.052-3.21-8.106-6.264C2.108 13.95 1 12.486 1 10.75 1 8.678 2.678 7 4.75 7c1.264 0 2.493.593 3.25 1.528C8.757 7.593 9.986 7 11.25 7 13.322 7 15 8.678 15 10.75c0 1.736-1.108 3.2-2.894 3.986C13.052 17.79 12 21 12 21z"/></svg>';
-                echo '</button>';
-                echo '<a href="' . esc_url( $product_url ) . '" class="wr-product-link">';
-                echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( get_the_title() ) . '">';
-                echo '<h3>' . esc_html( get_the_title() ) . '</h3>';
-                echo '<span class="price">' . wp_kses_post( $product->get_price_html() ) . '</span>';
-                echo '</a>';
-
-                if ( $product && $product->is_purchasable() && $product->is_in_stock() ) {
-                    echo sprintf(
-                        '<a href="%1$s" data-quantity="1" class="wr-add-to-cart button add_to_cart_button ajax_add_to_cart" data-product_id="%2$s" data-product_sku="%3$s" rel="nofollow">%4$s</a>',
-                        esc_url( $product->add_to_cart_url() ),
-                        esc_attr( $product->get_id() ),
-                        esc_attr( $product->get_sku() ),
-                        esc_html( $product->add_to_cart_text() )
-                    );
+                if ( $query->have_posts() ) {
+                    while ( $query->have_posts() ) {
+                        $query->the_post();
+                        wc_get_template( 'content-product.php' );
+                    }
                 }
+                wp_reset_postdata();
+                ?>
+            </div>
 
-                echo '</div>';
-            }
-            wp_reset_postdata();
-        }
+            <div class="wr-pagination">
+                <?php
+                    echo paginate_links([
+                        'total'     => $query->max_num_pages,
+                        'current'   => $paged,
+                        'format'    => '#',
+                        'type'      => 'plain',
+                        'prev_text' => '&lt;',
+                        'next_text' => '&gt;',
+                    ]);
+                ?>
+            </div>
 
-        /* Pagination */
-        $total_pages     = $query->max_num_pages;
-        $original_query  = $GLOBALS['wp_query'] ?? null;
-
-        if ( $total_pages > 1 ) {
-            $GLOBALS['wp_query'] = $query;
-
-            wc_setup_loop(
-                [
-                    'total'        => $query->found_posts,
-                    'total_pages'  => $total_pages,
-                    'per_page'     => $per_page,
-                    'current_page' => $paged,
-                    'is_paginated' => true,
-                ]
-            );
-
-            echo '<div class="wr-pagination">';
-            woocommerce_pagination();
-            echo '</div>';
-
-            wc_reset_loop();
-        }
-
-        $GLOBALS['wp_query'] = $original_query;
-
-        echo '</div>'; // .wr-product-items
+        </div>
+        <?php
         echo '</div>'; // .wr-product-grid-wrapper
     }
 }

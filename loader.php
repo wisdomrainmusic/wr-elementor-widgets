@@ -1,6 +1,8 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+require_once WR_EW_PLUGIN_DIR . 'includes/ajax-product-grid.php';
+
 // Elementor init.
 add_action( 'elementor/elements/categories_registered', 'wr_ew_register_category' );
 
@@ -71,6 +73,14 @@ add_action('wp_enqueue_scripts', function() {
         true
     );
 
+    wp_enqueue_script(
+        'wr-product-grid-ajax',
+        WR_EW_PLUGIN_URL . 'assets/js/wr-product-grid.js',
+        ['jquery'],
+        '1.0.0',
+        true
+    );
+
     $wishlist_page = get_page_by_path( 'wishlist' );
     $wishlist_url  = $wishlist_page ? get_permalink( $wishlist_page ) : home_url( '/wishlist/' );
 
@@ -81,6 +91,14 @@ add_action('wp_enqueue_scripts', function() {
             'ajax_url'     => admin_url( 'admin-ajax.php' ),
             'logged_in'    => is_user_logged_in(),
             'wishlist_url' => $wishlist_url,
+        ]
+    );
+
+    wp_localize_script(
+        'wr-product-grid-ajax',
+        'wr_ajax',
+        [
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
         ]
     );
 });
