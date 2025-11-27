@@ -1,3 +1,50 @@
+/* ------------------------------
+   WR – UI Polish Pack (carousel)
+--------------------------------- */
+
+/* Price stabilization */
+.wr-product-card .wr-product-price {
+    min-height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Title stabilization */
+.wr-product-card .wr-product-title {
+    min-height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Wishlist alignment */
+.wr-product-card .wr-wishlist-btn {
+    top: 10px !important;
+    right: 10px !important;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Add to cart hover */
+.wr-product-card .wr-add-to-cart-btn,
+.wr-product-card .button,
+.wr-product-card a.button {
+    transition: all .25s ease;
+    transform: translateY(0);
+}
+
+.wr-product-card .wr-add-to-cart-btn:hover,
+.wr-product-card .button:hover,
+.wr-product-card a.button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
 /* WR Product Carousel Styles */
 
 .wr-carousel-card {
