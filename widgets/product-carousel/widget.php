@@ -24,28 +24,67 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
     }
 
     protected function register_controls() {
+
+        // CONTENT
         $this->start_controls_section('content_section', [
             'label' => __('Content', 'wr-ecom'),
             'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
         ]);
 
+        // Product Count
         $this->add_control('posts_per_page', [
             'label' => __('Products Count', 'wr-ecom'),
             'type'  => \Elementor\Controls_Manager::NUMBER,
             'default' => 10,
         ]);
 
+        // Product Categories
+        $this->add_control('product_categories', [
+            'label' => __('Product Categories', 'wr-ecom'),
+            'type'  => \Elementor\Controls_Manager::SELECT2,
+            'multiple' => true,
+            'options' => $this->get_product_categories(),
+            'description' => __('Leave empty to show all products.', 'wr-ecom'),
+        ]);
+
         $this->end_controls_section();
+    }
+
+    private function get_product_categories() {
+        $terms = get_terms([
+            'taxonomy' => 'product_cat',
+            'hide_empty' => false,
+        ]);
+
+        $options = [];
+        if ($terms && !is_wp_error($terms)) {
+            foreach ($terms as $term) {
+                $options[$term->slug] = $term->name;
+            }
+        }
+        return $options;
     }
 
     protected function render() {
         $settings = $this->get_settings_for_display();
 
+        // PRODUCT QUERY
         $args = [
             'post_type'      => 'product',
             'posts_per_page' => $settings['posts_per_page'],
             'post_status'    => 'publish',
         ];
+
+        // Category filter
+        if ( ! empty($settings['product_categories']) ) {
+            $args['tax_query'] = [
+                [
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'slug',
+                    'terms'    => $settings['product_categories'],
+                ],
+            ];
+        }
 
         $loop = new WP_Query($args);
         ?>
@@ -53,33 +92,42 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
         <div class="wr-product-carousel swiper">
             <div class="swiper-wrapper">
 
-                <?php if ($loop->have_posts()) : ?>
-                    <?php while ($loop->have_posts()) : $loop->the_post(); global $product; ?>
+            <?php if ($loop->have_posts()) : ?>
+                <?php while ($loop->have_posts()) : $loop->the_post(); global $product; ?>
 
-                        <div class="swiper-slide wr-product-card">
-                            <a href="<?php the_permalink(); ?>" class="wr-product-card-inner">
+                <div class="swiper-slide">
+                    <div class="wr-product-card">
 
-                                <div class="wr-product-image">
-                                    <?php echo $product->get_image('medium'); ?>
-                                </div>
-
-                                <h3 class="wr-product-title"><?php the_title(); ?></h3>
-
-                                <div class="wr-product-price">
-                                    <?php echo $product->get_price_html(); ?>
-                                </div>
-
-                            </a>
+                        <div class="wr-product-image">
+                            <?php echo $product->get_image('medium'); ?>
                         </div>
 
-                    <?php endwhile; wp_reset_postdata(); ?>
-                <?php else : ?>
+                        <h3 class="wr-product-title"><?php the_title(); ?></h3>
 
-                    <div class="swiper-slide">
-                        <p>No products found.</p>
+                        <div class="wr-product-price">
+                            <?php echo $product->get_price_html(); ?>
+                        </div>
+
+                        <div class="wr-card-actions">
+
+                            <!-- ADD TO CART -->
+                            <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
+                               class="button add_to_cart_button ajax_add_to_cart">
+                               Add to cart
+                            </a>
+
+                            <!-- WISHLIST -->
+                            <div class="wr-wishlist-btn" data-product-id="<?php echo get_the_ID(); ?>">
+                                <i class="wr-heart-icon"></i>
+                            </div>
+
+                        </div>
+
                     </div>
+                </div>
 
-                <?php endif; ?>
+                <?php endwhile; wp_reset_postdata(); ?>
+            <?php endif; ?>
 
             </div>
 
