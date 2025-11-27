@@ -94,6 +94,9 @@ class WR_EW_Product_Grid extends Widget_Base {
                 $product_url = get_permalink();
 
                 echo '<div class="wr-product-item">';
+                echo '<button class="wr-wishlist-btn" data-id="' . get_the_ID() . '">';
+                echo '<svg class="wr-heart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-5.052-3.21-8.106-6.264C2.108 13.95 1 12.486 1 10.75 1 8.678 2.678 7 4.75 7c1.264 0 2.493.593 3.25 1.528C8.757 7.593 9.986 7 11.25 7 13.322 7 15 8.678 15 10.75c0 1.736-1.108 3.2-2.894 3.986C13.052 17.79 12 21 12 21z"/></svg>';
+                echo '</button>';
                 echo '<a href="' . esc_url( $product_url ) . '" class="wr-product-link">';
                 echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( get_the_title() ) . '">';
                 echo '<h3>' . esc_html( get_the_title() ) . '</h3>';
