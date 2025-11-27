@@ -1,0 +1,94 @@
+/* WR Product Grid Wrapper */
+.wr-product-grid-wrapper {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 40px;
+    margin: 40px 0;
+}
+
+/* Sidebar */
+.wr-filter-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wr-filter-sidebar li {
+    font-size: 16px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.wr-filter-sidebar li:hover {
+    color: #000;
+    transform: translateX(4px);
+}
+
+.wr-filter-sidebar li.active {
+    font-weight: 600;
+    color: #000;
+    border-left: 3px solid #000;
+    padding-left: 6px;
+}
+
+/* Product Grid */
+.wr-product-items {
+    display: grid;
+    gap: 30px;
+}
+
+/* Columns support */
+.wr-product-grid-wrapper[data-columns="2"] .wr-product-items {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.wr-product-grid-wrapper[data-columns="3"] .wr-product-items {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.wr-product-grid-wrapper[data-columns="4"] .wr-product-items {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Product Item */
+.wr-product-item {
+    text-align: left;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: 0.2s;
+}
+
+.wr-product-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.wr-product-item h3 {
+    font-size: 17px;
+    margin: 10px 0 5px;
+    font-weight: 500;
+}
+
+.wr-product-item .price {
+    font-size: 15px;
+    color: #333;
+}
+
+/* Hover Effect */
+.wr-product-item:hover {
+    transform: translateY(-4px);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .wr-product-grid-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .wr-filter-sidebar {
+        margin-bottom: 20px;
+    }
+}
