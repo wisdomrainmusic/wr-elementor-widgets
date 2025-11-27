@@ -119,7 +119,12 @@ class WR_Product_Carousel extends \Elementor\Widget_Base {
                             <!-- WISHLIST -->
                             <div class="wr-carousel-wishlist wr-wishlist-btn"
                                  data-product-id="<?php echo get_the_ID(); ?>">
-                                <i class="wr-heart-icon"></i>
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 21s-6.5-4.35-9-8.5C1.03 9.02 2.1 5.6 4.9 4.4c1.8-.8 4-.3 5.1 1C11.1 4.1 13.3 3.6 15.1 4.4c2.8 1.2 3.87 4.62 1.9 8.1C18.5 16.65 12 21 12 21z"
+                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+
                             </div>
 
                         </div>
