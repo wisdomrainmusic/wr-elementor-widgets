@@ -14,5 +14,4 @@ if ( empty( $product ) || ! $product->is_visible() ) {
     return;
 }
 
-// Tek bir merkezden kart üretelim
-include WR_EW_PLUGIN_DIR . 'widgets/product-grid/card.php';
+wr_render_product_card( $product, 'grid' );
