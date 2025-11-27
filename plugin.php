@@ -175,17 +175,22 @@ function wr_render_wishlist_fab() {
 }
 
 function wr_filter_products() {
-    $cat      = isset( $_POST['cat'] ) ? intval( $_POST['cat'] ) : 0;
-    $page     = isset( $_POST['page'] ) ? max( 1, intval( $_POST['page'] ) ) : 1;
-    $per_page = 12;
+
+    if ( ! defined( 'ABSPATH' ) ) {
+        exit;
+    }
+
+    $page = isset( $_POST['page'] ) ? max( 1, intval( $_POST['page'] ) ) : 1;
+    $cat  = isset( $_POST['cat'] )  ? absint( $_POST['cat'] )          : 0;
 
     $args = [
         'post_type'      => 'product',
-        'posts_per_page' => $per_page,
+        'posts_per_page' => 12,
         'paged'          => $page,
     ];
 
-    if ( $cat > 0 ) {
+    // Kategori filtresi
+    if ( $cat ) {
         $args['tax_query'] = [
             [
                 'taxonomy' => 'product_cat',
@@ -202,44 +207,16 @@ function wr_filter_products() {
     if ( $query->have_posts() ) {
         while ( $query->have_posts() ) {
             $query->the_post();
-
-            wc_get_template( 'content-product.php', [], '', WR_EW_PLUGIN_DIR . 'templates/' );
+            global $product;
+            // TAM BURASI: Grid ve Ajax her yerde aynı kartı kullanıyor
+            include WR_EW_PLUGIN_DIR . 'widgets/product-grid/card.php';
         }
+    } else {
+        echo '<p>No products found.</p>';
     }
-
-    $products_html = ob_get_clean();
-
-    $total_pages     = $query->max_num_pages;
-    $original_query  = $GLOBALS['wp_query'] ?? null;
-
-    ob_start();
-
-    if ( $total_pages > 1 ) {
-        $GLOBALS['wp_query'] = $query;
-
-        wc_setup_loop(
-            [
-                'total'        => $query->found_posts,
-                'total_pages'  => $total_pages,
-                'per_page'     => $per_page,
-                'current_page' => $page,
-                'is_paginated' => true,
-            ]
-        );
-
-        echo '<div class="wr-pagination">';
-        woocommerce_pagination();
-        echo '</div>';
-
-        wc_reset_loop();
-    }
-
-    $GLOBALS['wp_query'] = $original_query;
-
-    $pagination_html = ob_get_clean();
 
     wp_reset_postdata();
 
-    echo $products_html . $pagination_html;
+    echo ob_get_clean();
     wp_die();
 }

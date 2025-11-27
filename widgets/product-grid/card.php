@@ -6,7 +6,10 @@ global $product;
 
 <div class="wr-product-card">
 
-    <button class="wr-wishlist-btn" data-product="<?php echo $product->get_id(); ?>">
+    <button
+        class="wr-wishlist-btn"
+        data-product-id="<?php echo (int) $product->get_id(); ?>"
+    >
         <svg class="wr-heart-icon" viewBox="0 0 24 24">
             <path d="M12 21s-6-4.35-10-9c-2-2.48-2-6.5 1-8.5 2.5-1.6 6-.5 7.5 2C12 3 15.5 2 18 3.5c3 2 3 6.02 1 8.5-4 4.65-10 9-10 9z"/>
         </svg>
