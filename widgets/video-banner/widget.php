@@ -111,24 +111,20 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
         $is_youtube = false;
         $is_vimeo   = false;
 
-        // -------------- YOUTUBE ID PARSING --------------
-        if ( strpos($url, 'youtube') !== false || strpos($url, 'youtu') !== false ) {
+        // UNIVERSAL YOUTUBE ID PARSER (Shorts + Watch + Embed + youtu.be)
+        if (strpos($url, 'youtu') !== false) {
 
             $is_youtube = true;
 
-            // shorts
-            if (preg_match('/shorts\/([A-Za-z0-9_\-]+)/', $url, $m)) {
-                $video_id = $m[1];
-            }
+            // Extract ID from any YouTube URL
+            preg_match(
+                '#(?:youtube\.com/(?:shorts/|watch\?v=|embed/)|youtu\.be/)([A-Za-z0-9_\-]{6,})#',
+                $url,
+                $match
+            );
 
-            // watch?v=
-            if (!$video_id && preg_match('/v=([A-Za-z0-9_\-]+)/', $url, $m)) {
-                $video_id = $m[1];
-            }
-
-            // youtu.be
-            if (!$video_id && preg_match('#youtu\.be/([A-Za-z0-9_\-]+)#', $url, $m)) {
-                $video_id = $m[1];
+            if (!empty($match[1])) {
+                $video_id = $match[1];
             }
         }
 
