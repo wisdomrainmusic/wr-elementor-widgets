@@ -119,19 +119,46 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
 
         $ratio_class = $type === 'vertical' ? 'ratio-9x16' : 'ratio-16x9';
 
-        // YouTube embed convert
-        if ( strpos( $url, 'youtube.com' ) !== false || strpos( $url, 'youtu.be' ) !== false ) {
+        // --------------------------
+        // YOUTUBE PARSER (FULL AUTO)
+        // --------------------------
+        if (
+            strpos( $url, 'youtube.com' ) !== false ||
+            strpos( $url, 'youtu.be' ) !== false ||
+            strpos( $url, '/shorts/' ) !== false
+        ) {
 
-            $url = preg_replace(
-                '/watch\?v=([a-zA-Z0-9_\-]+)/',
-                'embed/$1',
-                $url
-            );
+            // Extract ID from ANY format
+            $video_id = '';
 
-            $url = str_replace( 'youtu.be/', 'www.youtube.com/embed/', $url );
+            // shorts link
+            if ( preg_match( '/shorts\/([a-zA-Z0-9_\-]+)/', $url, $m ) ) {
+                $video_id = $m[1];
+            }
 
-            // Disable related videos + autoplayless
-            $url .= ( strpos( $url, '?' ) === false ? '?' : '&' ) . 'rel=0&autoplay=0&loop=0&controls=1';
+            // watch?v=
+            if ( preg_match( '/watch\?v=([a-zA-Z0-9_\-]+)/', $url, $m ) ) {
+                $video_id = $m[1];
+            }
+
+            // youtu.be
+            if ( preg_match( '#youtu\.be/([a-zA-Z0-9_\-]+)#', $url, $m ) ) {
+                $video_id = $m[1];
+            }
+
+            // fallback (maybe embed provided)
+            if ( ! $video_id && preg_match( '#embed/([a-zA-Z0-9_\-]+)#', $url, $m ) ) {
+                $video_id = $m[1];
+            }
+
+            // Final embed URL
+            $url = "https://www.youtube.com/embed/" . $video_id;
+
+            // Add safe parameters
+            $url .= "?rel=0&autoplay=0&loop=0&controls=1&modestbranding=1";
+
+            // Shorts require origin to allow iframe
+            $url .= "&origin=" . urlencode( site_url() );
         }
 
         // Vimeo embed convert
