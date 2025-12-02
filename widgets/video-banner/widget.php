@@ -90,6 +90,26 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
             ]
         );
 
+        $this->add_responsive_control(
+            'video_height',
+            [
+                'label' => __( 'Video Height', 'wr-elementor-widgets' ),
+                'type'  => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'vh' ],
+                'range' => [
+                    'px' => [ 'min' => 150, 'max' => 800 ],
+                    'vh' => [ 'min' => 20, 'max' => 100 ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 350,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-video-banner' => 'height: {{SIZE}}{{UNIT}} !important; padding-top: 0 !important;',
+                ],
+            ]
+        );
+
         $this->end_controls_section();
     }
 
