@@ -85,6 +85,7 @@ add_action( 'wp_enqueue_scripts', function() {
 
         'product-tabs'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'tab-product-grid'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'usp-row'                  => [ 'css' => true, 'js' => [ 'jquery' ] ],
     ];
 
 
@@ -186,6 +187,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'product-tabs',
         'tab-product-grid',
         'testimonials',
+        'usp-row',
         // ❌ wishlist removed
     ];
 
