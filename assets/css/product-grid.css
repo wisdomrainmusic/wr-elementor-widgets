@@ -587,3 +587,43 @@
 .wr-product-card__wishlist .wrw-heart.active {
     background-image: url('data:image/svg+xml;utf8,<svg fill="%23ff2c62" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-6-4.4-9-8C-1 7 4 1 8 4c1.9 1.5 2 3 4 3s2.1-1.5 4-3c4-3 9 3 5 9-3 3.6-9 8-9 8z"/></svg>');
 }
+/* Product card container relative yapılıyor */
+.wr-product-card {
+    position: relative !important;
+}
+
+/* Wishlist artık kartın köşesine hizalanıyor */
+.wr-product-card__wishlist .wrw-wishlist-btn {
+    position: absolute;
+    top: 12px !important;
+    right: 12px !important;
+    width: 34px;
+    height: 34px;
+    background: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    z-index: 30;
+    transition: 0.25s ease;
+    border: 1px solid #ececec;
+}
+
+/* Hover efekti */
+.wr-product-card__wishlist .wrw-wishlist-btn:hover {
+    transform: scale(1.08);
+}
+
+/* Heart icon normal */
+.wr-product-card__wishlist .wrw-heart {
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="none" stroke="%23000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-6-4.4-9-8C-1 7 4 1 8 4c1.9 1.5 2 3 4 3s2.1-1.5 4-3c4-3 9 3 5 9-3 3.6-9 8-9 8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+/* Heart icon active */
+.wr-product-card__wishlist .wrw-heart.active {
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23ff2c62" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-6-4.4-9-8C-1 7 4 1 8 4c1.9 1.5 2 3 4 3s2.1-1.5 4-3c4-3 9 3 5 9-3 3.6-9 8-9 8z"/></svg>');
+}
