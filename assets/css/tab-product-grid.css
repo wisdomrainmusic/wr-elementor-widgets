@@ -1,0 +1,174 @@
+/* ---------------------------------------------------------
+   WR Tab Product Grid — FINAL (Unified with WR Product Grid)
+---------------------------------------------------------- */
+
+/* Wrapper */
+.wr-tab-product-grid-wrapper {
+    width: 100%;
+    background: #f9fafb;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 20px 22px 22px;
+    box-sizing: border-box;
+}
+
+/* ------------------ TABS ------------------ */
+
+.wr-tpg-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.wr-tpg-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background 0.16s, border-color 0.16s, color 0.16s, box-shadow 0.16s;
+    white-space: nowrap;
+}
+
+.wr-tpg-tab:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    box-shadow: 0 0 0 1px rgba(148,163,184,0.3);
+}
+
+.wr-tpg-tab.is-active {
+    background: #111827;
+    color: #ffffff;
+    border-color: #111827;
+    box-shadow: 0 8px 18px rgba(15,23,42,0.22);
+}
+
+/* ------------------ LOADING OVERLAY ------------------ */
+
+.wr-tpg-grid-wrapper {
+    position: relative;
+}
+
+.wr-tpg-loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(249,250,251,0.75);
+    z-index: 5;
+    backdrop-filter: blur(2px);
+}
+
+.wr-tpg-grid-wrapper.is-loading .wr-tpg-loading-overlay {
+    display: flex;
+}
+
+.wr-tpg-spinner {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #111827;
+    animation: wr-tpg-spin 0.8s linear infinite;
+}
+
+@keyframes wr-tpg-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ------------------ GRID STRUCTURE ------------------ */
+
+.wr-tpg-products {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px !important;
+}
+
+/* WC default loop override (canlı site fix) */
+.wr-tpg-products.products li.product {
+    float: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    display: block !important;
+}
+
+@media (max-width: 1024px) {
+    .wr-tpg-products { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .wr-tpg-products { grid-template-columns: repeat(1, 1fr); }
+}
+
+/* Kart yüksekliğini WR product-grid ile hizala */
+.wr-tpg-card .wr-product-card {
+    height: 380px;
+}
+
+/* ------------------ EMPTY STATE ------------------ */
+
+.wr-tpg-no-products {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f3f4f6;
+    font-size: 13px;
+    color: #4b5563;
+    text-align: center;
+    grid-column: 1/-1;
+}
+
+/* ------------------ RESPONSIVE PADDING ------------------ */
+
+@media (max-width: 640px) {
+    .wr-tab-product-grid-wrapper { padding: 16px 14px 18px; }
+    .wr-tpg-tabs { gap: 6px; }
+    .wr-tpg-tab { padding: 6px 11px; font-size: 12px; }
+}
+
+/* Elementor editor notice */
+.wr-tab-product-grid-notice {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fef3c7;
+    font-size: 13px;
+    color: #92400e;
+}
+
+/* LOAD MORE BUTTON */
+.wr-tpg-loadmore-wrapper {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.wr-tpg-loadmore-btn {
+    display: inline-block;
+    padding: 10px 26px;
+    border-radius: 999px;
+    border: none;
+    background: #111827;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(15,23,42,0.25);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.wr-tpg-loadmore-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(15,23,42,0.32);
+    background: #020617;
+}
+

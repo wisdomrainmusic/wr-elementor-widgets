@@ -1,0 +1,78 @@
+/* ---------------------------------------------------------
+   WR Campaign Bar
+   Folder: campaign-bar
+---------------------------------------------------------- */
+
+.wr-campaign-bar {
+    width: 100%;
+    padding: 12px 18px;
+    background: #111;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.25s ease;
+}
+
+.wr-campaign-bar:hover {
+    opacity: 0.92;
+}
+
+.wr-campaign-bar-link {
+    text-decoration: none;
+    display: block;
+}
+
+.wr-campaign-bar-text {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-align: center;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .wr-campaign-bar-text {
+        font-size: 17px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .wr-campaign-bar {
+        padding: 10px 14px;
+    }
+    .wr-campaign-bar-text {
+        font-size: 15px;
+    }
+}
+
+/* -------------------------------------------------------
+   MARQUEE MODE
+---------------------------------------------------------- */
+
+.wr-marquee {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.wr-marquee-inner {
+    display: flex;
+    gap: 60px;
+    white-space: nowrap;
+    animation: wr-marquee-scroll 18s linear infinite;
+}
+
+.wr-marquee-inner .wr-campaign-bar-text {
+    flex-shrink: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+/* Animation */
+@keyframes wr-marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}

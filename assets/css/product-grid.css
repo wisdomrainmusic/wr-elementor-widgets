@@ -511,3 +511,39 @@
 .wr-product-items li.product .button:hover {
     background: #1257b8;
 }
+
+/* IMAGE AREA – wishlist wrapper */
+.wr-product-image-wrapper {
+    position: relative;
+}
+
+/* Wishlist button */
+.wr-wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 38px;
+    height: 38px;
+    background: #ffffffcc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+    z-index: 10;
+    backdrop-filter: blur(3px);
+}
+
+/* Default heart state */
+.wr-wishlist-btn svg path {
+    transition: 0.25s ease;
+}
+
+/* ACTIVE STATE */
+.wr-wishlist-btn.active svg path {
+    fill: #ff2d55;
+    stroke: #ff2d55;
+}
+

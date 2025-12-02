@@ -1,0 +1,101 @@
+/* GRID WRAPPER — 3lü masaüstü düzeni */
+.wr-featured-cart-horizontal-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 sabit kolon */
+    gap: 35px;
+}
+
+/* Tablet görünümü: 2 kolon */
+@media (max-width: 1024px) {
+    .wr-featured-cart-horizontal-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobil görünümü: 1 kolon */
+@media (max-width: 600px) {
+    .wr-featured-cart-horizontal-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* CARD — beyaz içerik paneli + contain görüntü */
+.wr-fch-card {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    border-radius: 14px;
+    overflow: hidden;
+    background-size: contain;
+    background-position: center top;
+    background-repeat: no-repeat;
+    padding-top: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+
+    transition: 0.35s ease;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.08);
+}
+
+/* HOVER */
+.wr-fch-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 34px rgba(0,0,0,0.25);
+}
+
+/* RESPONSIVE HEIGHTS */
+@media(max-width: 1024px){
+    .wr-fch-card { height: 290px; }
+}
+@media(max-width: 768px){
+    .wr-fch-card { height: 250px; }
+}
+@media(max-width: 480px){
+    .wr-fch-card { height: 220px; }
+}
+
+/* CONTENT BOX (dikey ile aynı) */
+.wr-fch-content {
+    width: 100%;
+    background: #fff;
+    padding: 18px 22px 22px;
+    text-align: center;
+    border-radius: 0 0 14px 14px;
+    box-sizing: border-box;
+    margin-top: auto;
+}
+
+/* TITLE */
+.wr-fch-content h3 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+}
+
+/* DESCRIPTION */
+.wr-fch-content p {
+    margin: 0 0 14px;
+    font-size: 15px;
+    color: #444;
+    opacity: 0.95;
+}
+
+/* BUTTON */
+.wr-fch-button {
+    padding: 10px 18px;
+    background: #111;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: 0.25s ease;
+}
+
+.wr-fch-button:hover {
+    background: #2b2b2b;
+}
