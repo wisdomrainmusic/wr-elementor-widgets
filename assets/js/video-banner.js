@@ -59,25 +59,30 @@
 
     function resizePlayer($wrap, player, aspect) {
 
-        let W = $wrap.width();
-        let H = $wrap.height();
-        let R = aspectRatio(aspect);
+        let containerWidth = $wrap.width();
+        let containerHeight;
 
-        let videoW = W;
-        let videoH = W / R;
-
-        if (videoH < H) {
-            videoH = H;
-            videoW = H * R;
+        // Auto height calculation
+        if (aspect === 'vertical') {
+            // 9:16 → dikey video
+            containerHeight = containerWidth * (16/9);
+        } else {
+            // 16:9 → yatay video
+            containerHeight = containerWidth * (9/16);
         }
 
-        $(player.getIframe()).css({
-            width: videoW,
-            height: videoH,
-            top: '50%',
-            left: '50%',
+        // Apply container height
+        $wrap.css('height', containerHeight + 'px');
+
+        // Fit video element inside
+        let iframe = $(player.getIframe());
+        iframe.css({
+            width: containerWidth,
+            height: containerHeight,
+            top: 0,
+            left: 0,
             position: 'absolute',
-            transform: 'translate(-50%, -50%)'
+            transform: 'none'
         });
     }
 
