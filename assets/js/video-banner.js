@@ -28,7 +28,6 @@
         if ($wrap.data('player-type') !== 'youtube') return; // Vimeo destek sonradan eklenir
 
         let id = $wrap.data('video-id');
-        let aspect = $wrap.data('aspect');
         let container = $wrap.find('.wr-video-player')[0];
 
         players[id] = new YT.Player(container, {
@@ -43,57 +42,31 @@
             },
             events: {
                 'onReady': function(event) {
-                    resizePlayer($wrap, event.target, aspect);
+                    resizePlayer($wrap, event.target);
                 }
             }
         });
 
         $(window).on('resize', function(){
-            if (players[id]) resizePlayer($wrap, players[id], aspect);
+            if (players[id]) resizePlayer($wrap, players[id]);
         });
     }
 
-    function aspectRatio(aspect){
-        return (aspect === 'vertical') ? (9/16) : (16/9);
-    }
+    function resizePlayer($wrap, player) {
 
-    function resizePlayer($wrap, player, aspect) {
+        let containerWidth = $wrap.width();
+        let containerHeight = containerWidth * (9/16); // Always 16:9
 
-        const containerWidth = $wrap.width();
-        let containerHeight;
-
-        if (aspect === 'vertical') {
-            // 9:16 — actual visible video area smaller than frame
-            containerHeight = containerWidth * (16/9);
-        } else {
-            // 16:9
-            containerHeight = containerWidth * (9/16);
-        }
-
-        // Apply container height
         $wrap.css('height', containerHeight + 'px');
 
-        // Fit actual iframe
         let iframe = $(player.getIframe());
-
-        let videoW = containerWidth;
-        let videoH = containerWidth * (aspect === 'vertical' ? (16/9) : (9/16));
-
-        // If video too short, expand height
-        if (videoH < containerHeight) {
-            videoH = containerHeight;
-            videoW = (aspect === 'vertical')
-                ? containerHeight * (9/16)
-                : containerHeight * (16/9);
-        }
-
         iframe.css({
-            width: videoW,
-            height: videoH,
-            top: '50%',
-            left: '50%',
+            width: containerWidth,
+            height: containerHeight,
+            top: 0,
+            left: 0,
             position: 'absolute',
-            transform: 'translate(-50%, -50%)'
+            transform: 'none'
         });
     }
 
