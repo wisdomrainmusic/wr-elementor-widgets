@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class WR_EW_Usp_Row extends \Elementor\Widget_Base {
 
     public function get_name() {
-        return 'wr-usp-row';
+        return 'usp-row';
     }
 
     public function get_title() {
