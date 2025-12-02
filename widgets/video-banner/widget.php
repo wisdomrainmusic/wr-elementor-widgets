@@ -20,11 +20,11 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
     }
 
     public function get_style_depends() {
-        return [ 'wr-video-banner-css' ];
+        return [ 'video-banner' ];
     }
 
     public function get_script_depends() {
-        return [ 'wr-video-banner-js' ];
+        return [ 'video-banner' ];
     }
 
     protected function register_controls() {
