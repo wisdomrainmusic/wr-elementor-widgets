@@ -395,33 +395,16 @@ class WR_EW_Product_Tabs extends \Elementor\Widget_Base {
 
         while ( $loop->have_posts() ) :
             $loop->the_post();
-            global $product;
 
-            ?>
+            $product = wc_get_product( get_the_ID() );
 
-            <div class="wr-pt-product-card">
-                <a href="<?php the_permalink(); ?>" class="wr-pt-thumb">
-                    <?php the_post_thumbnail('woocommerce_thumbnail'); ?>
-                </a>
+            if ( ! $product ) {
+                continue;
+            }
 
-                <div class="wr-pt-product-info">
-
-                    <h3 class="wr-pt-product-title">
-                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                    </h3>
-
-                    <div class="wr-pt-product-price">
-                        <?php echo $product->get_price_html(); ?>
-                    </div>
-
-                    <div class="wr-pt-product-actions">
-                        <?php woocommerce_template_loop_add_to_cart(); ?>
-                    </div>
-
-                </div>
-            </div>
-
-            <?php
+            echo '<div class="wr-product-tabs__item">';
+                wr_render_product_card( $product, 'tabs' );
+            echo '</div>';
 
         endwhile;
 
