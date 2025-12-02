@@ -1,7 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 class WR_EW_Video_Banner extends \Elementor\Widget_Base {
 
@@ -31,14 +29,9 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
 
     protected function register_controls() {
 
-        /* -------------------------------------
-           CONTENT
-        ------------------------------------- */
         $this->start_controls_section(
             'section_content',
-            [
-                'label' => __( 'Video', 'wr-elementor-widgets' ),
-            ]
+            [ 'label' => __( 'Video', 'wr-elementor-widgets' ) ]
         );
 
         $this->add_control(
@@ -46,8 +39,7 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
             [
                 'label'       => __( 'YouTube / Vimeo URL', 'wr-elementor-widgets' ),
                 'type'        => \Elementor\Controls_Manager::TEXT,
-                'placeholder' => 'https://youtube.com/... veya https://vimeo.com/...',
-                'label_block' => true,
+                'placeholder' => 'https://youtube.com/... veya https://vimeo.com/...'
             ]
         );
 
@@ -60,17 +52,15 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
                 'options' => [
                     'auto'      => __( 'Auto Detect', 'wr-elementor-widgets' ),
                     'horizontal'=> __( 'Horizontal (16:9)', 'wr-elementor-widgets' ),
-                    'vertical'  => __( 'Short / Vertical (9:16)', 'wr-elementor-widgets' ),
-                ],
+                    'vertical'  => __( 'Short / Vertical (9:16)', 'wr-elementor-widgets' )
+                ]
             ]
         );
 
         $this->end_controls_section();
 
 
-        /* -------------------------------------
-           STYLE
-        ------------------------------------- */
+        // STYLE > Height control
         $this->start_controls_section(
             'section_style',
             [
@@ -80,33 +70,19 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'border_radius',
-            [
-                'label' => __( 'Border Radius', 'wr-elementor-widgets' ),
-                'type'  => \Elementor\Controls_Manager::SLIDER,
-                'selectors' => [
-                    '{{WRAPPER}} .wr-video-banner iframe' => 'border-radius: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
             'video_height',
             [
                 'label' => __( 'Video Height', 'wr-elementor-widgets' ),
                 'type'  => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => [ 'px', 'vh' ],
                 'range' => [
-                    'px' => [ 'min' => 150, 'max' => 800 ],
-                    'vh' => [ 'min' => 20, 'max' => 100 ],
+                    'px' => [ 'min' => 200, 'max' => 900 ],
+                    'vh' => [ 'min' => 20, 'max' => 100 ]
                 ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 350,
-                ],
+                'default' => [ 'size' => 380, 'unit' => 'px' ],
                 'selectors' => [
-                    '{{WRAPPER}} .wr-video-banner' => 'height: {{SIZE}}{{UNIT}} !important; padding-top: 0 !important;',
-                ],
+                    '{{WRAPPER}} .wr-video-banner' => 'height: {{SIZE}}{{UNIT}};'
+                ]
             ]
         );
 
@@ -114,88 +90,66 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
     }
 
 
-    /* -------------------------------------
-       RENDER
-    ------------------------------------- */
     protected function render() {
 
         $settings  = $this->get_settings_for_display();
-        $url       = isset( $settings['video_url'] ) ? esc_url( $settings['video_url'] ) : '';
-        $type      = isset( $settings['video_type'] ) ? $settings['video_type'] : 'auto';
+        $url       = $settings['video_url'];
+        $type      = $settings['video_type'];
 
-        if ( empty( $url ) ) {
-            return;
-        }
+        if ( empty( $url ) ) return;
 
-        // AUTO DETECT (SHORT vs NORMAL)
+        // AUTO DETECT SHORT VIDEO
         if ( $type === 'auto' ) {
-
-            if ( preg_match( '/shorts|short/i', $url ) ) {
+            if ( preg_match('/shorts/i', $url) ) {
                 $type = 'vertical';
             } else {
                 $type = 'horizontal';
             }
         }
 
-        $ratio_class = $type === 'vertical' ? 'ratio-9x16' : 'ratio-16x9';
+        $video_id = '';
+        $is_youtube = false;
+        $is_vimeo   = false;
 
-        // --------------------------
-        // YOUTUBE PARSER (FULL AUTO)
-        // --------------------------
-        if (
-            strpos( $url, 'youtube.com' ) !== false ||
-            strpos( $url, 'youtu.be' ) !== false ||
-            strpos( $url, '/shorts/' ) !== false
-        ) {
+        // -------------- YOUTUBE ID PARSING --------------
+        if ( strpos($url, 'youtube') !== false || strpos($url, 'youtu') !== false ) {
 
-            // Extract ID from ANY format
-            $video_id = '';
+            $is_youtube = true;
 
-            // shorts link
-            if ( preg_match( '/shorts\/([a-zA-Z0-9_\-]+)/', $url, $m ) ) {
+            // shorts
+            if (preg_match('/shorts\/([A-Za-z0-9_\-]+)/', $url, $m)) {
                 $video_id = $m[1];
             }
 
             // watch?v=
-            if ( preg_match( '/watch\?v=([a-zA-Z0-9_\-]+)/', $url, $m ) ) {
+            if (!$video_id && preg_match('/v=([A-Za-z0-9_\-]+)/', $url, $m)) {
                 $video_id = $m[1];
             }
 
             // youtu.be
-            if ( preg_match( '#youtu\.be/([a-zA-Z0-9_\-]+)#', $url, $m ) ) {
+            if (!$video_id && preg_match('#youtu\.be/([A-Za-z0-9_\-]+)#', $url, $m)) {
                 $video_id = $m[1];
             }
-
-            // fallback (maybe embed provided)
-            if ( ! $video_id && preg_match( '#embed/([a-zA-Z0-9_\-]+)#', $url, $m ) ) {
-                $video_id = $m[1];
-            }
-
-            // Final embed URL
-            $url = "https://www.youtube.com/embed/" . $video_id;
-
-            // Add safe parameters
-            $url .= "?rel=0&autoplay=0&loop=0&controls=1&modestbranding=1";
-
-            // Shorts require origin to allow iframe
-            $url .= "&origin=" . urlencode( site_url() );
         }
 
-        // Vimeo embed convert
-        if ( strpos( $url, 'vimeo.com' ) !== false ) {
-            $url = preg_replace( '/vimeo.com\/(\d+)/', 'player.vimeo.com/video/$1', $url );
-            $url .= '?autoplay=0&loop=0&title=0&byline=0&portrait=0';
+        // -------------- VIMEO ID PARSING --------------
+        if ( strpos($url, 'vimeo') !== false ) {
+
+            $is_vimeo = true;
+
+            if (preg_match('/vimeo\.com\/(\d+)/', $url, $m)) {
+                $video_id = $m[1];
+            }
         }
 
         ?>
-        <div class="wr-video-banner <?php echo esc_attr( $ratio_class ); ?>">
-            <iframe
-                src="<?php echo esc_url( $url ); ?>"
-                frameborder="0"
-                allowfullscreen
-                allow="fullscreen; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            ></iframe>
+        <div class="wr-video-banner" 
+             data-player-type="<?php echo $is_youtube ? 'youtube' : ($is_vimeo ? 'vimeo' : 'unknown'); ?>"
+             data-video-id="<?php echo esc_attr($video_id); ?>"
+             data-aspect="<?php echo esc_attr($type); ?>">
+            <div class="wr-video-player"></div>
         </div>
         <?php
     }
 }
+
