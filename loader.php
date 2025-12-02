@@ -1,19 +1,29 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * -------------------------------------------------------
+ * REQUIRED FILES
+ * -------------------------------------------------------
+ */
 require_once WR_EW_PLUGIN_DIR . 'includes/ajax-product-grid.php';
 require_once WR_EW_PLUGIN_DIR . 'includes/render-product-card.php';
+require_once WR_EW_PLUGIN_DIR . 'includes/ajax-blog-grid.php';
+require_once WR_EW_PLUGIN_DIR . 'includes/tab-product-grid.php';
 
-// Elementor init.
-add_action( 'elementor/elements/categories_registered', 'wr_ew_register_category' );
 
-// Register custom category.
-function wr_ew_register_category( $elements_manager ) {
+/**
+ * -------------------------------------------------------
+ * ELEMENTOR CATEGORIES
+ * -------------------------------------------------------
+ */
+add_action( 'elementor/elements/categories_registered', function( $elements_manager ) {
+
     $elements_manager->add_category(
         'wr-widgets',
         [
             'title' => __( 'WR Widgets', 'wr-ew' ),
-            'icon'  => 'fa fa-plug',
+            'icon'  => 'fa fa-plug'
         ]
     );
 
@@ -21,28 +31,27 @@ function wr_ew_register_category( $elements_manager ) {
         'wr-ecommerce-elements',
         [
             'title' => __( 'WR Ecommerce Elements', 'wr-ew' ),
-            'icon'  => 'eicon-woocommerce',
+            'icon'  => 'eicon-woocommerce'
         ]
     );
-}
+});
 
-// Enqueue Swiper & custom slider assets
-add_action('wp_enqueue_scripts', function() {
-    // Swiper CSS
+
+/**
+ * -------------------------------------------------------
+ * ENQUEUE GLOBAL ASSETS
+ * -------------------------------------------------------
+ */
+add_action( 'wp_enqueue_scripts', function() {
+
+    /**
+     * Swiper Library
+     */
     wp_enqueue_style(
         'wr-swiper',
         'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'
     );
 
-    // Custom CSS
-    wp_enqueue_style(
-        'wr-hero-slider-css',
-        WR_EW_PLUGIN_URL . 'assets/css/hero-slider.css',
-        [],
-        '1.0.0'
-    );
-
-    // Swiper JS
     wp_enqueue_script(
         'wr-swiper',
         'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
@@ -51,114 +60,123 @@ add_action('wp_enqueue_scripts', function() {
         true
     );
 
-    // Custom JS
-    wp_enqueue_script(
-        'wr-hero-slider-js',
-        WR_EW_PLUGIN_URL . 'assets/js/hero-slider.js',
-        ['wr-swiper'],
-        '1.0.0',
-        true
-    );
 
-    wp_enqueue_script(
-        'wr-wishlist-js',
-        WR_EW_PLUGIN_URL . 'assets/js/wr-wishlist.js',
-        ['jquery'],
-        '1.0.0',
-        true
-    );
+    /**
+     * Widget Asset Map
+     */
+    $assets = [
 
-    wp_enqueue_style(
-        'wr-product-grid-css',
-        WR_EW_PLUGIN_URL . 'assets/css/product-grid.css',
-        [],
-        '1.0.0'
-    );
+        'hero-slider'              => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
+        'category-slider'          => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
 
-    wp_enqueue_style(
-        'wr-product-carousel-css',
-        WR_EW_PLUGIN_URL . 'assets/css/product-carousel.css',
-        [],
-        '1.0.0'
-    );
+        'banner'                   => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'blog-grid'                => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'campaign-bar'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
-    wp_enqueue_style(
-        'wr-wishlist-css',
-        WR_EW_PLUGIN_URL . 'assets/css/wishlist.css',
-        [],
-        '1.0.0'
-    );
+        // Product Grid — only wr-grid.js (wishlist removed)
+        'product-grid'             => [ 'css' => true, 'js' => [ 'jquery', 'wr-grid-js' ] ],
 
-    wp_enqueue_script(
-        'wr-grid-js',
-        WR_EW_PLUGIN_URL . 'assets/js/wr-grid.js',
-        ['jquery', 'wr-wishlist-js'],
-        '1.0.0',
-        true
-    );
+        'featured-cart-horizontal' => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'featured-cart-vertical'   => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'featured-cart-square'     => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
-    $wishlist_page = get_page_by_path( 'wishlist' );
-    $wishlist_url  = $wishlist_page ? get_permalink( $wishlist_page ) : home_url( '/wishlist/' );
+        'instagram-story'          => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'testimonials'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
-    wp_localize_script(
-        'wr-wishlist-js',
-        'wrWishlistData',
-        [
-            'ajax_url'  => admin_url( 'admin-ajax.php' ),
-            'nonce'     => wp_create_nonce( 'wr_grid_nonce' ),
-            'logged_in' => is_user_logged_in(),
-        ]
-    );
+        'product-tabs'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'tab-product-grid'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
+    ];
 
-    wp_localize_script(
-        'wr-grid-js',
-        'wrGridData',
-        [
-            'ajax_url'     => admin_url( 'admin-ajax.php' ),
-            'nonce'        => wp_create_nonce( 'wr_grid_nonce' ),
-            'logged_in'    => is_user_logged_in(),
-            'wishlist_url' => $wishlist_url,
-        ]
-    );
+
+    /**
+     * UNIVERSAL LOADER
+     */
+    foreach ( $assets as $key => $config ) {
+
+        // CSS
+        if ( ! empty( $config['css'] ) ) {
+            wp_enqueue_style(
+                "wr-{$key}-css",
+                WR_EW_PLUGIN_URL . "assets/css/{$key}.css",
+                [],
+                '2.1'
+            );
+        }
+
+        // JS
+        if ( ! empty( $config['js'] ) ) {
+
+            // Special rule: product-grid → wr-grid.js
+            if ( $key === 'product-grid' ) {
+                wp_enqueue_script(
+                    'wr-grid-js',
+                    WR_EW_PLUGIN_URL . 'assets/js/wr-grid.js',
+                    [ 'jquery' ],
+                    '2.1',
+                    true
+                );
+            }
+
+            wp_enqueue_script(
+                "wr-{$key}-js",
+                WR_EW_PLUGIN_URL . "assets/js/{$key}.js",
+                $config['js'],
+                '2.1',
+                true
+            );
+
+            wp_localize_script(
+                "wr-{$key}-js",
+                'wrEwAjax',
+                [ 'ajax_url' => admin_url( 'admin-ajax.php' ) ]
+            );
+        }
+    }
+
 });
 
+
+/**
+ * -------------------------------------------------------
+ * ELEMENTOR WIDGET LOADER
+ * -------------------------------------------------------
+ */
 add_action( 'elementor/widgets/register', function( $widgets_manager ) {
 
     $widget_dirs = [
-        'hero-slider',
-        'category-grid',
-        'product-grid',
-        'category-slider',
         'banner',
-        'icon-box',
-        'testimonials',
+        'blog-grid',
         'campaign-bar',
-        'blog-grid'
+        'category-grid',
+        'category-slider',
+        'featured-cart-horizontal',
+        'featured-cart-vertical',
+        'featured-cart-square',
+        'hero-slider',
+        'instagram-story',
+        'product-grid',
+        'product-tabs',
+        'tab-product-grid',
+        'testimonials',
+        // ❌ wishlist removed
     ];
 
     foreach ( $widget_dirs as $widget ) {
 
-        $file = WR_EW_PLUGIN_DIR . 'widgets/' . $widget . '/widget.php';
+        $file = WR_EW_PLUGIN_DIR . "widgets/{$widget}/widget.php";
 
         if ( file_exists( $file ) ) {
+
             require_once $file;
 
-            $class_name = 'WR_EW_' . str_replace( '-', '_', ucwords( $widget, '-' ) );
+            $class_name = 'WR_EW_' . str_replace(
+                '-', '_',
+                ucwords( $widget, '-' )
+            );
 
             if ( class_exists( $class_name ) ) {
                 $widgets_manager->register( new $class_name() );
             }
         }
     }
-
-    // Register Product Carousel widget manually
-    $product_carousel_file = WR_EW_PLUGIN_DIR . 'widgets/product-carousel/widget.php';
-
-    if ( file_exists( $product_carousel_file ) ) {
-        require_once $product_carousel_file;
-
-        if ( class_exists( 'WR_Product_Carousel' ) ) {
-            $widgets_manager->register( new WR_Product_Carousel() );
-        }
-    }
-} );
+});
