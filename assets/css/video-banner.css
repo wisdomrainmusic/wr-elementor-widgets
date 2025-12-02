@@ -5,7 +5,32 @@
     background: #000;
 }
 
+/* Blur background for vertical videos */
+.wr-video-banner.reels-mode::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(25px) brightness(0.8);
+    transform: scale(1.2);
+    z-index: 1;
+}
+
+/* Foreground video wrapper */
+.wr-video-banner .wr-video-player {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
 .wr-video-banner .wr-video-player iframe {
     border: 0;
     position: absolute;
+}
+
+
+/* Base height (dynamic in JS) */
+.wr-video-banner {
+    height: 380px;
 }

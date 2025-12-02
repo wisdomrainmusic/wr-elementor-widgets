@@ -139,11 +139,25 @@ class WR_EW_Video_Banner extends \Elementor\Widget_Base {
         }
 
         ?>
-        <div class="wr-video-banner" 
+        <div class="wr-video-banner <?php echo ($type === 'vertical' ? 'reels-mode' : ''); ?>"
              data-player-type="<?php echo $is_youtube ? 'youtube' : ($is_vimeo ? 'vimeo' : 'unknown'); ?>"
              data-video-id="<?php echo esc_attr($video_id); ?>"
              data-aspect="<?php echo esc_attr($type); ?>">
             <div class="wr-video-player"></div>
+            <?php if ($type === 'vertical'): 
+                // Construct fallback thumbnail URL
+                $thumb = "https://img.youtube.com/vi/" . $video_id . "/hqdefault.jpg";
+            ?>
+            <script>
+            document.addEventListener("DOMContentLoaded", function(){
+                const el = document.querySelector('.wr-video-banner.reels-mode');
+                if(el) {
+                    el.style.setProperty('--reels-bg', 'url(<?php echo esc_url($thumb); ?>)');
+                    el.style.backgroundImage = 'var(--reels-bg)';
+                }
+            });
+            </script>
+            <?php endif; ?>
         </div>
         <?php
     }
