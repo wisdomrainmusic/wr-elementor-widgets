@@ -72,6 +72,7 @@ add_action( 'wp_enqueue_scripts', function() {
         'banner'                   => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'blog-grid'                => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'campaign-bar'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'video-banner'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
         // Product Grid — only wr-grid.js (wishlist removed)
         'product-grid'             => [ 'css' => true, 'js' => [ 'jquery', 'wr-grid-js' ] ],
@@ -188,6 +189,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'tab-product-grid',
         'testimonials',
         'usp-row',
+        'video-banner',
         // ❌ wishlist removed
     ];
 
