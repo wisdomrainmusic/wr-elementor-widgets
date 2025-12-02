@@ -30,6 +30,12 @@ if ( ! function_exists( 'wr_render_product_card' ) ) {
                         <?php echo $product->get_image( 'medium' ); ?>
                     </div>
                 </a>
+
+                <?php if ( function_exists( 'wrw_render_wishlist_button' ) ) : ?>
+                    <div class="wr-product-card__wishlist">
+                        <?php wrw_render_wishlist_button( $product, $context ); ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <!-- TITLE -->

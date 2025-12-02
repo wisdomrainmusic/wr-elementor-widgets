@@ -50,13 +50,6 @@
         return isNaN(textNumber) ? 1 : textNumber;
     }
 
-    function applyWishlist($root) {
-        if (window.wrWishlist) {
-            window.wrWishlist.applyState($root);
-            window.wrWishlist.bind($root);
-        }
-    }
-
     function loadFilteredProducts($grid, cat, page) {
         if (!$grid.length || !config.ajax_url) return;
 
@@ -82,8 +75,6 @@
                     .hide()
                     .html(response)
                     .fadeIn(150);
-
-                applyWishlist($grid);
             },
             error: function() {
                 $items.removeClass('is-loading');
@@ -109,8 +100,6 @@
                 $grid
                     .removeClass('wr-loading')
                     .html(html);
-
-                applyWishlist($grid);
             },
             error: function() {
                 $grid.removeClass('wr-loading');

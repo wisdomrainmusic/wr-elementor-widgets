@@ -135,6 +135,34 @@ add_action( 'wp_enqueue_scripts', function() {
 
 });
 
+/**
+ * Ensure the wishlist AJAX script from the WR Wishlist plugin is loaded
+ * wherever Elementor widgets output wishlist buttons.
+ */
+function wr_ew_enqueue_wishlist_ajax_script() {
+    $wishlist_handle       = 'wrw-wishlist-ajax';
+    $wishlist_plugin_entry = WP_PLUGIN_DIR . '/wisdom-rain-wishlist/wisdom-rain-wishlist.php';
+
+    // Register the script if the wishlist plugin is present and hasn't registered it yet.
+    if ( ! wp_script_is( $wishlist_handle, 'registered' ) && file_exists( $wishlist_plugin_entry ) ) {
+        wp_register_script(
+            $wishlist_handle,
+            plugins_url( 'assets/js/wishlist-ajax.js', $wishlist_plugin_entry ),
+            [ 'jquery' ],
+            '1.0.0',
+            true
+        );
+    }
+
+    // Enqueue the script if it's registered (either here or by the wishlist plugin itself).
+    if ( wp_script_is( $wishlist_handle, 'registered' ) ) {
+        wp_enqueue_script( $wishlist_handle );
+    }
+}
+
+add_action( 'wp_enqueue_scripts', 'wr_ew_enqueue_wishlist_ajax_script', 20 );
+add_action( 'elementor/frontend/after_enqueue_scripts', 'wr_ew_enqueue_wishlist_ajax_script', 20 );
+
 
 /**
  * -------------------------------------------------------
