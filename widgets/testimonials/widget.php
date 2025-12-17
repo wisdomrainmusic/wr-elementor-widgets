@@ -309,6 +309,164 @@ class WR_EW_Testimonials extends \Elementor\Widget_Base {
         );
 
         $this->end_controls_section();
+
+
+        /* -------------------------------------------------
+           STYLE TAB - ARROWS
+        ------------------------------------------------- */
+        $this->start_controls_section(
+            'section_style_arrows',
+            [
+                'label' => __( 'Arrows', 'wr-elementor-widgets' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->start_controls_tabs( 'tabs_arrows_style' );
+
+        // NORMAL
+        $this->start_controls_tab(
+            'tab_arrows_normal',
+            [
+                'label' => __( 'Normal', 'wr-elementor-widgets' ),
+            ]
+        );
+
+        $this->add_control(
+            'arrow_color',
+            [
+                'label'     => __( 'Arrow Color', 'wr-elementor-widgets' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#111111',
+                'selectors' => [
+                    '{{WRAPPER}} .wr-testimonials-arrow'      => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wr-testimonials-arrow span' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'arrow_bg_color',
+            [
+                'label'     => __( 'Background Color', 'wr-elementor-widgets' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => 'rgba(255,255,255,0.9)',
+                'selectors' => [
+                    '{{WRAPPER}} .wr-testimonials-arrow' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'arrow_border_color',
+            [
+                'label'     => __( 'Border Color', 'wr-elementor-widgets' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => 'rgba(0,0,0,0.06)',
+                'selectors' => [
+                    '{{WRAPPER}} .wr-testimonials-arrow' => 'border: 1px solid {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'arrow_size',
+            [
+                'label'      => __( 'Button Size', 'wr-elementor-widgets' ),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [
+                    'px' => [ 'min' => 24, 'max' => 80 ],
+                ],
+                'default'    => [
+                    'size' => 32,
+                    'unit' => 'px',
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .wr-testimonials-arrow' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'arrow_icon_size',
+            [
+                'label'      => __( 'Icon Size', 'wr-elementor-widgets' ),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [
+                    'px' => [ 'min' => 10, 'max' => 40 ],
+                ],
+                'default'    => [
+                    'size' => 16,
+                    'unit' => 'px',
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .wr-testimonials-arrow' => 'font-size: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        // HOVER
+        $this->start_controls_tab(
+            'tab_arrows_hover',
+            [
+                'label' => __( 'Hover', 'wr-elementor-widgets' ),
+            ]
+        );
+
+        $this->add_control(
+            'arrow_color_hover',
+            [
+                'label'     => __( 'Arrow Color (Hover)', 'wr-elementor-widgets' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#111111',
+                'selectors' => [
+                    '{{WRAPPER}} .wr-testimonials-arrow:hover'      => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .wr-testimonials-arrow:hover span' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'arrow_bg_color_hover',
+            [
+                'label'     => __( 'Background Color (Hover)', 'wr-elementor-widgets' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => 'rgba(255,255,255,1)',
+                'selectors' => [
+                    '{{WRAPPER}} .wr-testimonials-arrow:hover' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'arrow_border_color_hover',
+            [
+                'label'     => __( 'Border Color (Hover)', 'wr-elementor-widgets' ),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => 'rgba(0,0,0,0.12)',
+                'selectors' => [
+                    '{{WRAPPER}} .wr-testimonials-arrow:hover' => 'border-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            [
+                'name'     => 'arrow_shadow',
+                'selector' => '{{WRAPPER}} .wr-testimonials-arrow',
+            ]
+        );
+
+        $this->end_controls_section();
     }
 
 
@@ -324,7 +482,6 @@ class WR_EW_Testimonials extends \Elementor\Widget_Base {
             return;
         }
 
-        // Prepare data for JS (for future advanced usage if needed)
         $prepared_items = [];
 
         foreach ( $items as $item ) {
@@ -351,9 +508,7 @@ class WR_EW_Testimonials extends \Elementor\Widget_Base {
 
         <div class="wr-testimonials-wrapper" data-wr-testimonials="<?php echo $data_attr; ?>">
 
-            <div class="wr-testimonials-header">
-                <!-- İstersen buraya Elementor Heading ile de başlık ekleyebilirsin -->
-            </div>
+            <div class="wr-testimonials-header"></div>
 
             <div class="wr-testimonials-slider">
                 <div class="wr-testimonials-track">
@@ -424,8 +579,7 @@ class WR_EW_Testimonials extends \Elementor\Widget_Base {
                     <span>&rarr;</span>
                 </button>
 
-                <div class="wr-testimonials-dots"></div>
-
+                
             </div>
 
         </div>
@@ -433,4 +587,3 @@ class WR_EW_Testimonials extends \Elementor\Widget_Base {
         <?php
     }
 }
-
