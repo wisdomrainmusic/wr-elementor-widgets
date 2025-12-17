@@ -9,8 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 require_once WR_EW_PLUGIN_DIR . 'includes/ajax-product-grid.php';
 require_once WR_EW_PLUGIN_DIR . 'includes/render-product-card.php';
 require_once WR_EW_PLUGIN_DIR . 'includes/ajax-blog-grid.php';
-require_once WR_EW_PLUGIN_DIR . 'includes/tab-product-grid.php';
-
+// require_once WR_EW_PLUGIN_DIR . 'includes/tab-product-grid.php'; // ❌ eski (sil)
 
 /**
  * -------------------------------------------------------
@@ -36,7 +35,6 @@ add_action( 'elementor/elements/categories_registered', function( $elements_mana
     );
 });
 
-
 /**
  * -------------------------------------------------------
  * ENQUEUE GLOBAL ASSETS
@@ -44,9 +42,7 @@ add_action( 'elementor/elements/categories_registered', function( $elements_mana
  */
 add_action( 'wp_enqueue_scripts', function() {
 
-    /**
-     * Swiper Library
-     */
+    // Swiper Library
     wp_enqueue_style(
         'wr-swiper',
         'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'
@@ -60,9 +56,12 @@ add_action( 'wp_enqueue_scripts', function() {
         true
     );
 
-
     /**
      * Widget Asset Map
+     *
+     * Not:
+     * - product-tabs + tab-product-grid ❌ kaldırıldı
+     * - product-full-tabs ✅ yeni widget (CSS/JS widget içinde inline register ediliyor)
      */
     $assets = [
 
@@ -74,7 +73,7 @@ add_action( 'wp_enqueue_scripts', function() {
         'campaign-bar'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'video-banner'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
-        // Product Grid — only wr-grid.js (wishlist removed)
+        // Product Grid — only wr-grid.js
         'product-grid'             => [ 'css' => true, 'js' => [ 'jquery', 'wr-grid-js' ] ],
 
         'featured-cart-horizontal' => [ 'css' => true, 'js' => [ 'jquery' ] ],
@@ -84,15 +83,12 @@ add_action( 'wp_enqueue_scripts', function() {
         'instagram-story'          => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'testimonials'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
-        'product-tabs'             => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'tab-product-grid'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'usp-row'                  => [ 'css' => true, 'js' => [ 'jquery' ] ],
+
+        // ✅ Yeni widget: dosya aratma yok
+        'product-full-tabs'        => [ 'css' => false, 'js' => false ],
     ];
 
-
-    /**
-     * UNIVERSAL LOADER
-     */
     foreach ( $assets as $key => $config ) {
 
         // CSS
@@ -109,7 +105,7 @@ add_action( 'wp_enqueue_scripts', function() {
         if ( ! empty( $config['js'] ) ) {
 
             // Special rule: product-grid → wr-grid.js
-            if ( $key === 'product-grid' ) {
+            if ( $key === 'product-grid' && ! wp_script_is( 'wr-grid-js', 'enqueued' ) ) {
                 wp_enqueue_script(
                     'wr-grid-js',
                     WR_EW_PLUGIN_URL . 'assets/js/wr-grid.js',
@@ -145,7 +141,6 @@ function wr_ew_enqueue_wishlist_ajax_script() {
     $wishlist_handle       = 'wrw-wishlist-ajax';
     $wishlist_plugin_entry = WP_PLUGIN_DIR . '/wisdom-rain-wishlist/wisdom-rain-wishlist.php';
 
-    // Register the script if the wishlist plugin is present and hasn't registered it yet.
     if ( ! wp_script_is( $wishlist_handle, 'registered' ) && file_exists( $wishlist_plugin_entry ) ) {
         wp_register_script(
             $wishlist_handle,
@@ -156,12 +151,10 @@ function wr_ew_enqueue_wishlist_ajax_script() {
         );
     }
 
-    // Enqueue the script if it's registered (either here or by the wishlist plugin itself).
     if ( wp_script_is( $wishlist_handle, 'registered' ) ) {
         wp_enqueue_script( $wishlist_handle );
     }
 }
-
 add_action( 'wp_enqueue_scripts', 'wr_ew_enqueue_wishlist_ajax_script', 20 );
 add_action( 'elementor/frontend/after_enqueue_scripts', 'wr_ew_enqueue_wishlist_ajax_script', 20 );
 
@@ -185,30 +178,42 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'hero-slider',
         'instagram-story',
         'product-grid',
-        'product-tabs',
-        'tab-product-grid',
+
+        // ✅ yeni tek widget:
+        'product-full-tabs',
+
         'testimonials',
         'usp-row',
         'video-banner',
-        // ❌ wishlist removed
+    ];
+
+    // ✅ Class name map (özellikle product-full-tabs için %100 garanti)
+    $class_map = [
+        'product-full-tabs' => 'WR_EW_Product_Full_Tabs',
     ];
 
     foreach ( $widget_dirs as $widget ) {
 
         $file = WR_EW_PLUGIN_DIR . "widgets/{$widget}/widget.php";
 
-        if ( file_exists( $file ) ) {
+        if ( ! file_exists( $file ) ) {
+            continue;
+        }
 
-            require_once $file;
+        require_once $file;
 
-            $class_name = 'WR_EW_' . str_replace(
-                '-', '_',
-                ucwords( $widget, '-' )
-            );
+        // Default class name generator (eski davranış)
+        $default_class = 'WR_EW_' . str_replace(
+            '-',
+            '_',
+            ucwords( $widget, '-' )
+        );
 
-            if ( class_exists( $class_name ) ) {
-                $widgets_manager->register( new $class_name() );
-            }
+        // Map varsa onu kullan
+        $class_name = $class_map[ $widget ] ?? $default_class;
+
+        if ( class_exists( $class_name ) ) {
+            $widgets_manager->register( new $class_name() );
         }
     }
 });
