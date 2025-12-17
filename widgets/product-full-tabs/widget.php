@@ -949,26 +949,42 @@ CSS;
     qsa(root || document, ".wrpft-wrap").forEach(initWrap);
   }
 
-  document.addEventListener("DOMContentLoaded", function(){
-    init(document);
-  });
+  function onReady(fn){
+    if(document.readyState !== "loading") fn();
+    else document.addEventListener("DOMContentLoaded", fn);
+  }
+
+  onReady(function(){ init(document); });
 
   // Elementor hook (NO "&&" chaining)
   function initElementor(){
-    if(!window.jQuery) return;
-    if(!window.elementorFrontend) return;
+    var attempts = 0;
+    var maxAttempts = 10;
+    var delay = 200;
 
-    jQuery(window).on("elementor/frontend/init", function(){
-      if(!elementorFrontend.hooks) return;
-      if(!elementorFrontend.hooks.addAction) return;
+    function attach(){
+      if(
+        !window.elementorFrontend ||
+        !elementorFrontend.hooks ||
+        !elementorFrontend.hooks.addAction
+      ){
+        attempts++;
+        if(attempts <= maxAttempts){
+          setTimeout(attach, delay);
+        }
+        return;
+      }
 
       elementorFrontend.hooks.addAction(
         "frontend/element_ready/wr-product-full-tabs.default",
         function($scope){
-          if($scope && $scope[0]) init($scope[0]);
+          var el = ($scope && $scope[0]) ? $scope[0] : $scope;
+          if(el) init(el);
         }
       );
-    });
+    }
+
+    attach();
   }
 
   initElementor();
