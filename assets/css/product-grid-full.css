@@ -245,3 +245,17 @@
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 }
+
+@media (max-width: 767px){
+  .wr-pg-full.is-cols-3 .wr-pg-full__grid-inner,
+  .wr-pg-full.is-cols-4 .wr-pg-full__grid-inner{
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px){
+  .wr-pg-full.is-cols-3 .wr-pg-full__grid-inner,
+  .wr-pg-full.is-cols-4 .wr-pg-full__grid-inner{
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
