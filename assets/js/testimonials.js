@@ -1,104 +1,64 @@
-(function($) {
-    'use strict';
+(function ($) {
+  "use strict";
 
-    function initWrTestimonialsScope(scope) {
-        var $scope   = $(scope);
-        var $wrapper = $scope.find('.wr-testimonials-wrapper').first();
-        if (!$wrapper.length) return;
+  function parseJSONSafe(str) {
+    try { return JSON.parse(str); } catch(e){ return null; }
+  }
 
-        var $slider = $wrapper.find('.wr-testimonials-slider').first();
-        var $track  = $wrapper.find('.wr-testimonials-track').first();
-        if (!$slider.length || !$track.length) return;
+  function initTestimonials($scope) {
+    var $widget = $scope.find('.wr-testimonials');
+    if (!$widget.length) return;
 
-        var $cards  = $track.find('.wr-testimonial-card');
-        if (!$cards.length) return;
+    // one widget instance at a time (Elementor can render multiple)
+    $widget.each(function(){
+      var $root = $(this);
+      var swiperEl = $root.find('.swiper')[0];
+      if (!swiperEl) return;
 
-        var $prev   = $slider.find('.wr-testimonials-arrow.prev');
-        var $next   = $slider.find('.wr-testimonials-arrow.next');
-        var $dotsWrap = $slider.find('.wr-testimonials-dots');
+      // destroy if already inited
+      if (swiperEl.swiper) {
+        swiperEl.swiper.destroy(true, true);
+      }
 
-        var currentIndex = 0;
-        var total        = $cards.length;
-        var dots         = [];
+      var settings = parseJSONSafe($root.attr('data-settings')) || {};
+      var spaceBetween = settings.spaceBetween || 18;
+      var speed = settings.speed || 600;
 
-        /* ------------------------------
-         * DOTS OLUŞTUR
-         * ------------------------------ */
-        $dotsWrap.empty();
-        for (var i = 0; i < total; i++) {
-            var $dot = $('<button/>', {
-                type: 'button',
-                'class': 'wr-testimonials-dot' + (i === 0 ? ' is-active' : ''),
-                'data-index': i
-            });
-            $dotsWrap.append($dot);
-            dots.push($dot);
+      var perView = settings.perView || { d:3, t:2, m:1 };
+      var perGroup = settings.perGroup || { d:3, t:2, m:1 };
+
+      var autoplay = false;
+      if (settings.autoplay) {
+        autoplay = { delay: settings.autoplayDelay || 3500, disableOnInteraction: false };
+      }
+
+      var nextEl = $root.find('.wr-t-next')[0];
+      var prevEl = $root.find('.wr-t-prev')[0];
+      var pagEl  = $root.find('.wr-t-pagination')[0];
+
+      new Swiper(swiperEl, {
+        slidesPerView: perView.d,
+        slidesPerGroup: perGroup.d,
+        spaceBetween: spaceBetween,
+        speed: speed,
+        loop: !!settings.loop,
+        watchOverflow: true,
+        autoplay: autoplay,
+
+        navigation: (nextEl && prevEl) ? { nextEl: nextEl, prevEl: prevEl } : undefined,
+        pagination: (pagEl) ? { el: pagEl, clickable: true } : undefined,
+
+        breakpoints: {
+          0:    { slidesPerView: perView.m, slidesPerGroup: perGroup.m },
+          768:  { slidesPerView: perView.t, slidesPerGroup: perGroup.t },
+          1024: { slidesPerView: perView.d, slidesPerGroup: perGroup.d }
         }
-
-        /* ------------------------------
-         * SLIDER GÜNCELLE
-         * ------------------------------ */
-        function updateSlider() {
-            var offset = -currentIndex * 100;
-            $track.css('transform', 'translateX(' + offset + '%)');
-
-            dots.forEach(function($dot, i) {
-                $dot.toggleClass('is-active', i === currentIndex);
-            });
-        }
-
-        function goTo(index) {
-            if (index < 0) index = total - 1;
-            if (index >= total) index = 0;
-            currentIndex = index;
-            updateSlider();
-        }
-
-        /* ------------------------------
-         * OKLAR
-         * ------------------------------ */
-        $prev.on('click', function(e) {
-            e.preventDefault();
-            goTo(currentIndex - 1);
-        });
-
-        $next.on('click', function(e) {
-            e.preventDefault();
-            goTo(currentIndex + 1);
-        });
-
-        /* ------------------------------
-         * DOT TIKLAMALARI
-         * ------------------------------ */
-        dots.forEach(function($dot) {
-            $dot.on('click', function(e) {
-                e.preventDefault();
-                var idx = parseInt($(this).data('index'), 10);
-                if (!isNaN(idx)) {
-                    goTo(idx);
-                }
-            });
-        });
-
-        // İlk konum
-        updateSlider();
-    }
-
-    // Normal sayfa yüklemesi
-    $(document).ready(function() {
-        $('.wr-testimonials-wrapper').each(function() {
-            initWrTestimonialsScope(this);
-        });
+      });
     });
+  }
 
-    // Elementor edit modu
-    $(window).on('elementor/frontend/init', function() {
-        elementorFrontend.hooks.addAction(
-            'frontend/element_ready/wr-testimonials.default',
-            function($scope) {
-                initWrTestimonialsScope($scope[0]);
-            }
-        );
-    });
+  $(window).on('elementor/frontend/init', function () {
+    elementorFrontend.hooks.addAction('frontend/element_ready/wr-testimonials.default', initTestimonials);
+  });
 
 })(jQuery);
