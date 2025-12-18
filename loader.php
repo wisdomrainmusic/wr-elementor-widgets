@@ -64,7 +64,6 @@ add_action( 'wp_enqueue_scripts', function() {
         'category-slider'    => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
 
         'blog-grid'          => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'campaign-bar'       => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'video-banner'       => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'product-grid-full'  => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'testimonial-full'   => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
@@ -134,7 +133,6 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
 
         // Core
         'blog-grid',
-        'campaign-bar',
         'category-grid',
         'category-slider',
         'hero-slider',
