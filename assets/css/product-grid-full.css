@@ -229,3 +229,8 @@
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 }
+@media (max-width: 767px){
+  .wr-pg-full__grid{
+    grid-template-columns: 1fr !important;
+  }
+}
