@@ -127,11 +127,13 @@ class WR_EW_Hero_Slider_Full extends \Elementor\Widget_Base {
             ],
         ]);
 
-        $this->add_control('bg_fit_scale', [
-            'label' => __( 'Background Zoom Out (Fit)', 'wr-ew' ),
+        $this->add_responsive_control('bg_fit_scale', [
+            'label' => __( 'Background Scale (Fit)', 'wr-ew' ),
             'type' => \Elementor\Controls_Manager::SLIDER,
             'size_units' => [ '%' ],
-            'range' => [ '%' => [ 'min' => 70, 'max' => 140 ] ],
+            'range' => [
+                '%' => [ 'min' => 30, 'max' => 200 ],
+            ],
             'default' => [ 'unit' => '%', 'size' => 110 ],
             'selectors' => [
                 '{{WRAPPER}} .wr-hero-slider-full__bgimg' => 'transform: translate(-50%, -50%) scale(calc({{SIZE}}/100));',
