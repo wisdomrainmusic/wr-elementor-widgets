@@ -60,7 +60,6 @@ add_action( 'wp_enqueue_scripts', function() {
      */
     $assets = [
 
-        'hero-slider'        => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
         'category-slider'    => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
 
         'blog-grid'            => [ 'css' => true, 'js' => [ 'jquery' ] ],
@@ -144,7 +143,6 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'blog-grid',
         'category-grid',
         'category-slider',
-        'hero-slider',
         'instagram-story',
         'video-banner',
         'product-grid-full',
