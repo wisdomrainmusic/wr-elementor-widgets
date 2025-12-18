@@ -1,6 +1,7 @@
 .wr-hero-slider-swiper {
     width: 100%;
     position: relative;
+    overflow: hidden; /* safety: prevent horizontal overflow on mobile */
     background-color: transparent !important;
 }
 

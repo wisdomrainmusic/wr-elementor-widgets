@@ -9,53 +9,61 @@
  * - Overlay not closing (init not triggered)
  */
 
-function initWrHeroSlider($scope) {
+(function($) {
 
-    // Elementor widget wrapper
-    const widget = $scope[0];
-    if (!widget) return;
+    function initWrHeroSlider($scope) {
 
-    // Swiper container inside widget
-    const slider = widget.querySelector('.wr-hero-slider-swiper');
-    if (!slider) return;
+        // Elementor widget wrapper
+        const widget = $scope[0];
+        if (!widget || typeof Swiper === 'undefined') return;
 
-    // Init Swiper safely
-    new Swiper(slider, {
-        loop: true,
-        autoplay: {
-            delay: 4000,
-            disableOnInteraction: false,
-        },
-        pagination: {
-            el: slider.querySelector('.swiper-pagination'),
-            clickable: true,
-        },
-        navigation: {
-            nextEl: slider.querySelector('.swiper-button-next'),
-            prevEl: slider.querySelector('.swiper-button-prev'),
-        },
-        effect: 'slide',
-    });
-}
+        // Swiper container inside widget
+        const slider = widget.querySelector('.wr-hero-slider-swiper');
+        if (!slider) return;
 
+        // Destroy previous instance in editor re-render
+        if (slider.swiper) {
+            slider.swiper.destroy(true, true);
+        }
 
-/**
- * 1) NORMAL FRONTEND INITIALIZATION
- */
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.elementor-widget-wr-hero-slider')
-        .forEach(widget => {
-            initWrHeroSlider($(widget));
+        // Init Swiper safely
+        new Swiper(slider, {
+            loop: true,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: slider.querySelector('.swiper-pagination'),
+                clickable: true,
+            },
+            navigation: {
+                nextEl: slider.querySelector('.swiper-button-next'),
+                prevEl: slider.querySelector('.swiper-button-prev'),
+            },
+            effect: 'slide',
         });
-});
+    }
 
 
-/**
- * 2) ELEMENTOR EDITOR MODE INITIALIZATION
- */
-window.addEventListener('elementor/frontend/init', () => {
-    elementorFrontend.hooks.addAction(
-        'frontend/element_ready/wr-hero-slider.default',
-        initWrHeroSlider
-    );
-});
+    /**
+     * 1) NORMAL FRONTEND INITIALIZATION
+     */
+    $(function() {
+        $('.elementor-widget-wr-hero-slider').each(function() {
+            initWrHeroSlider($(this));
+        });
+    });
+
+
+    /**
+     * 2) ELEMENTOR EDITOR MODE INITIALIZATION
+     */
+    $(window).on('elementor/frontend/init', function() {
+        elementorFrontend.hooks.addAction(
+            'frontend/element_ready/wr-hero-slider.default',
+            initWrHeroSlider
+        );
+    });
+
+})(jQuery);
