@@ -8,6 +8,7 @@
 
     $widgets.each(function () {
       var $root = $(this);
+      var root = $root[0];
       var swiperEl = $root.find('.wr-hero-slider-full__swiper')[0];
       if (!swiperEl) return;
 
@@ -19,17 +20,32 @@
       var prevEl = $root.find('.wr-hero-slider-full__arrow--prev')[0];
       var nextEl = $root.find('.wr-hero-slider-full__arrow--next')[0];
 
-      var swiper = new Swiper(swiperEl, {
+      var loop = root && root.getAttribute('data-loop') === '1';
+      var autoplayOn = root && root.getAttribute('data-autoplay') === '1';
+      var delay = parseInt((root && root.getAttribute('data-delay')) || '5000', 10);
+      var pauseHover = root && root.getAttribute('data-pause-hover') === '1';
+
+      var config = {
+        loop: loop,
         slidesPerView: 1,
-        speed: 650,
-        loop: false,
+        speed: 550,
         navigation: nextEl && prevEl ? { nextEl: nextEl, prevEl: prevEl } : undefined,
         on: {
-          slideChange: function () {
-            updateTabs(swiper.realIndex);
+          slideChange: function (sw) {
+            updateTabs(sw.realIndex);
           }
         }
-      });
+      };
+
+      if (autoplayOn) {
+        config.autoplay = {
+          delay: isNaN(delay) ? 5000 : delay,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: pauseHover
+        };
+      }
+
+      var swiper = new Swiper(swiperEl, config);
 
       function updateTabs(activeIndex) {
         if (!$tabs.length) return;
