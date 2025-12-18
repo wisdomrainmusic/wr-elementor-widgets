@@ -1,44 +1,37 @@
 /* ---------------------------------------------------------
    WR Campaign Bar JS
-   - Hover scale effect
-   - Elementor Edit Mode marquee fix
+   - Elementor re-render marquee stabilize
 ---------------------------------------------------------- */
 
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
+  "use strict";
 
-    /* ---------------------------------------
-       Hover scaling effect
-    --------------------------------------- */
-    const bars = document.querySelectorAll(".wr-campaign-bar");
-
-    bars.forEach(bar => {
-        bar.addEventListener("mouseenter", () => {
-            bar.style.transform = "scale(1.01)";
-        });
-        bar.addEventListener("mouseleave", () => {
-            bar.style.transform = "scale(1)";
-        });
+  function restartMarquee(scope) {
+    const tracks = (scope || document).querySelectorAll('[data-wr-marquee]');
+    tracks.forEach(track => {
+      // animation restart (editor + bazı mobil webview freeze fix)
+      track.style.animation = "none";
+      // reflow
+      track.offsetHeight; // eslint-disable-line no-unused-expressions
+      track.style.animation = "";
+      track.style.animationPlayState = "running";
     });
+  }
 
+  document.addEventListener("DOMContentLoaded", function () {
+    restartMarquee(document);
+  });
 
-    /* ---------------------------------------
-       Elementor editor marquee animation fix
-       (Without this, animation may freeze)
-    --------------------------------------- */
-    if (typeof window.elementorFrontend !== "undefined") {
+  // Elementor hooks (frontend + editor)
+  document.addEventListener("elementor/frontend/init", function () {
+    if (!window.elementorFrontend || !window.elementorFrontend.hooks) return;
 
-        const fixMarquee = () => {
-            const marquees = document.querySelectorAll(".wr-marquee-inner");
-            marquees.forEach(inner => {
-                inner.style.animationPlayState = "running";
-            });
-        };
-
-        // Run once after load
-        setTimeout(fixMarquee, 300);
-
-        // Run again when Elementor widgets are re-rendered
-        document.addEventListener("elementor/frontend/init", fixMarquee);
-    }
-
-});
+    window.elementorFrontend.hooks.addAction(
+      "frontend/element_ready/wr-campaign-bar.default",
+      function ($scope) {
+        const el = $scope && $scope[0] ? $scope[0] : document;
+        restartMarquee(el);
+      }
+    );
+  });
+})();
