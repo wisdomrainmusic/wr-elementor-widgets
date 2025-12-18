@@ -1,7 +1,16 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Background;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Box_Shadow;
+use Elementor\Repeater;
+use Elementor\Utils;
+
+class WR_EW_Hero_Slider extends Widget_Base {
 
     public function get_name() {
         return 'wr-hero-slider';
@@ -24,25 +33,37 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
     }
 
     protected function register_controls() {
+        $this->register_content_controls();
+        $this->register_style_controls();
+    }
 
-        /* ------------------------------
-         * CONTENT CONTROLS (Slides)
-         * ------------------------------ */
+    protected function register_content_controls() {
         $this->start_controls_section(
             'content_section',
             [
                 'label' => __( 'Slides', 'wr-ew' ),
-                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+                'tab'   => Controls_Manager::TAB_CONTENT,
             ]
         );
 
-        $repeater = new \Elementor\Repeater();
+        $repeater = new Repeater();
+
+        $repeater->add_control(
+            'image',
+            [
+                'label'   => __( 'Background Image', 'wr-ew' ),
+                'type'    => Controls_Manager::MEDIA,
+                'default' => [
+                    'url' => Utils::get_placeholder_image_src(),
+                ],
+            ]
+        );
 
         $repeater->add_control(
             'title',
             [
                 'label'   => __( 'Title', 'wr-ew' ),
-                'type'    => \Elementor\Controls_Manager::TEXT,
+                'type'    => Controls_Manager::TEXT,
                 'default' => __( 'Your Slide Title', 'wr-ew' ),
             ]
         );
@@ -51,7 +72,7 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             'subtitle',
             [
                 'label'   => __( 'Subtitle', 'wr-ew' ),
-                'type'    => \Elementor\Controls_Manager::TEXTAREA,
+                'type'    => Controls_Manager::TEXTAREA,
                 'default' => __( 'Your slide subtitle goes here.', 'wr-ew' ),
             ]
         );
@@ -60,7 +81,7 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             'button_text',
             [
                 'label'   => __( 'Button Text', 'wr-ew' ),
-                'type'    => \Elementor\Controls_Manager::TEXT,
+                'type'    => Controls_Manager::TEXT,
                 'default' => __( 'Learn More', 'wr-ew' ),
             ]
         );
@@ -68,8 +89,8 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
         $repeater->add_control(
             'button_link',
             [
-                'label' => __( 'Button Link', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::URL,
+                'label'   => __( 'Button URL', 'wr-ew' ),
+                'type'    => Controls_Manager::URL,
                 'default' => [
                     'url' => '#',
                 ],
@@ -77,13 +98,14 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
         );
 
         $repeater->add_control(
-            'image',
+            'button_new_tab',
             [
-                'label'   => __( 'Background Image', 'wr-ew' ),
-                'type'    => \Elementor\Controls_Manager::MEDIA,
-                'default' => [
-                    'url' => \Elementor\Utils::get_placeholder_image_src(),
-                ],
+                'label'        => __( 'Open in new tab', 'wr-ew' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => __( 'Yes', 'wr-ew' ),
+                'label_off'    => __( 'No', 'wr-ew' ),
+                'return_value' => 'yes',
+                'default'      => '',
             ]
         );
 
@@ -91,7 +113,7 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             'slides',
             [
                 'label'       => __( 'Slides', 'wr-ew' ),
-                'type'        => \Elementor\Controls_Manager::REPEATER,
+                'type'        => Controls_Manager::REPEATER,
                 'fields'      => $repeater->get_controls(),
                 'default'     => [],
                 'title_field' => '{{{ title }}}',
@@ -100,14 +122,250 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
 
-        /* ------------------------------
-         * STYLE TAB — TITLE
-         * ------------------------------ */
+        $this->start_controls_section(
+            'slider_settings_section',
+            [
+                'label' => __( 'Slider Settings', 'wr-ew' ),
+                'tab'   => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'autoplay',
+            [
+                'label'        => __( 'Autoplay', 'wr-ew' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => __( 'On', 'wr-ew' ),
+                'label_off'    => __( 'Off', 'wr-ew' ),
+                'return_value' => 'yes',
+                'default'      => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'autoplay_delay',
+            [
+                'label'   => __( 'Autoplay Delay (ms)', 'wr-ew' ),
+                'type'    => Controls_Manager::NUMBER,
+                'min'     => 1000,
+                'max'     => 10000,
+                'step'    => 100,
+                'default' => 4000,
+                'condition' => [
+                    'autoplay' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'loop',
+            [
+                'label'        => __( 'Loop', 'wr-ew' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => __( 'On', 'wr-ew' ),
+                'label_off'    => __( 'Off', 'wr-ew' ),
+                'return_value' => 'yes',
+                'default'      => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'show_arrows',
+            [
+                'label'        => __( 'Show Arrows', 'wr-ew' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => __( 'Show', 'wr-ew' ),
+                'label_off'    => __( 'Hide', 'wr-ew' ),
+                'return_value' => 'yes',
+                'default'      => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'show_dots',
+            [
+                'label'        => __( 'Show Dots', 'wr-ew' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => __( 'Show', 'wr-ew' ),
+                'label_off'    => __( 'Hide', 'wr-ew' ),
+                'return_value' => 'yes',
+                'default'      => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'fullwidth',
+            [
+                'label'        => __( 'Full Width (Hero)', 'wr-ew' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => __( 'On', 'wr-ew' ),
+                'label_off'    => __( 'Off', 'wr-ew' ),
+                'return_value' => 'yes',
+                'default'      => '',
+                'description'  => __( 'Stretch the slider to 100vw without breaking boxed layouts.', 'wr-ew' ),
+            ]
+        );
+
+        $this->end_controls_section();
+    }
+
+    protected function register_style_controls() {
+        $this->start_controls_section(
+            'style_slider_section',
+            [
+                'label' => __( 'Slider', 'wr-ew' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_responsive_control(
+            'slider_height',
+            [
+                'label' => __( 'Slider Height', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 240,
+                        'max' => 900,
+                    ],
+                ],
+                'default' => [
+                    'size' => 550,
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slider' => '--wr-hero-height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Background::get_type(),
+            [
+                'name'     => 'slide_background',
+                'label'    => __( 'Slide Background', 'wr-ew' ),
+                'types'    => [ 'classic', 'gradient' ],
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide',
+            ]
+        );
+
+        $this->end_controls_section();
+
+        $this->start_controls_section(
+            'style_content_position_section',
+            [
+                'label' => __( 'Content Position', 'wr-ew' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_responsive_control(
+            'content_offset_x',
+            [
+                'label' => __( 'Horizontal Offset (X)', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [ 'min' => -300, 'max' => 300 ],
+                ],
+                'default' => [ 'size' => 0, 'unit' => 'px' ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slider' => '--wr-hero-x: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'content_offset_y',
+            [
+                'label' => __( 'Vertical Offset (Y)', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [ 'min' => -300, 'max' => 300 ],
+                ],
+                'default' => [ 'size' => 0, 'unit' => 'px' ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slider' => '--wr-hero-y: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        $this->start_controls_section(
+            'style_panel_section',
+            [
+                'label' => __( 'Text Panel', 'wr-ew' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Background::get_type(),
+            [
+                'name'     => 'panel_background',
+                'label'    => __( 'Panel Background', 'wr-ew' ),
+                'types'    => [ 'classic', 'gradient' ],
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__panel',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'panel_padding',
+            [
+                'label'      => __( 'Padding', 'wr-ew' ),
+                'type'       => Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'em', '%' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__panel' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'default' => [
+                    'top' => '20',
+                    'right' => '24',
+                    'bottom' => '20',
+                    'left' => '24',
+                    'unit' => 'px',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'panel_border_radius',
+            [
+                'label'      => __( 'Border Radius', 'wr-ew' ),
+                'type'       => Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', '%' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__panel' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Border::get_type(),
+            [
+                'name'     => 'panel_border',
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__panel',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+            [
+                'name'     => 'panel_box_shadow',
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__panel',
+            ]
+        );
+
+        $this->end_controls_section();
+
         $this->start_controls_section(
             'style_title_section',
             [
                 'label' => __( 'Title', 'wr-ew' ),
-                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+                'tab'   => Controls_Manager::TAB_STYLE,
             ]
         );
 
@@ -115,31 +373,28 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             'title_color',
             [
                 'label' => __( 'Color', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::COLOR,
+                'type'  => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .wr-hero-content h2' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__title' => 'color: {{VALUE}};',
                 ],
             ]
         );
 
         $this->add_group_control(
-            \Elementor\Group_Control_Typography::get_type(),
+            Group_Control_Typography::get_type(),
             [
                 'name'     => 'title_typography',
-                'selector' => '{{WRAPPER}} .wr-hero-content h2',
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__title',
             ]
         );
 
         $this->end_controls_section();
 
-        /* ------------------------------
-         * STYLE TAB — SUBTITLE
-         * ------------------------------ */
         $this->start_controls_section(
             'style_subtitle_section',
             [
                 'label' => __( 'Subtitle', 'wr-ew' ),
-                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+                'tab'   => Controls_Manager::TAB_STYLE,
             ]
         );
 
@@ -147,295 +402,210 @@ class WR_EW_Hero_Slider extends \Elementor\Widget_Base {
             'subtitle_color',
             [
                 'label' => __( 'Color', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::COLOR,
+                'type'  => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .wr-hero-content p' => 'color: {{VALUE}}',
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__subtitle' => 'color: {{VALUE}};',
                 ],
             ]
         );
 
         $this->add_group_control(
-            \Elementor\Group_Control_Typography::get_type(),
+            Group_Control_Typography::get_type(),
             [
                 'name'     => 'subtitle_typography',
-                'selector' => '{{WRAPPER}} .wr-hero-content p',
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__subtitle',
             ]
         );
 
         $this->end_controls_section();
 
-        /* ------------------------------
-         * STYLE TAB — BUTTON
-         * ------------------------------ */
         $this->start_controls_section(
             'style_button_section',
             [
                 'label' => __( 'Button', 'wr-ew' ),
-                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'btn_text_color',
-            [
-                'label' => __( 'Text Color', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-btn' => 'color: {{VALUE}}',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'btn_bg_color',
-            [
-                'label' => __( 'Background Color', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-btn' => 'background-color: {{VALUE}}',
-                ],
+                'tab'   => Controls_Manager::TAB_STYLE,
             ]
         );
 
         $this->add_group_control(
-            \Elementor\Group_Control_Typography::get_type(),
+            Group_Control_Typography::get_type(),
             [
                 'name'     => 'button_typography',
-                'selector' => '{{WRAPPER}} .wr-hero-btn',
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn',
             ]
         );
 
-        $this->end_controls_section();
+        $this->start_controls_tabs( 'button_style_tabs' );
 
-        /* ------------------------------
-         * STYLE TAB — LAYOUT
-         * ------------------------------ */
-        $this->start_controls_section(
-            'style_layout_section',
-            [
-                'label' => __( 'Layout', 'wr-ew' ),
-                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
-            ]
+        $this->start_controls_tab(
+            'button_tab_normal',
+            [ 'label' => __( 'Normal', 'wr-ew' ) ]
         );
 
-        // Slider yüksekliği (varsayılan: 550 / 420 / 320px).
-        $this->add_responsive_control(
-            'slider_height',
-            [
-                'label' => __( 'Slider Height', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::SLIDER,
-                'size_units' => [ 'px' ],
-                'range' => [
-                    'px' => [ 'min' => 200, 'max' => 900 ],
-                ],
-                'default' => [
-                    'size' => 550,
-                    'unit' => 'px',
-                ],
-                'tablet_default' => [
-                    'size' => 420,
-                    'unit' => 'px',
-                ],
-                'mobile_default' => [
-                    'size' => 320,
-                    'unit' => 'px',
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-slide' => 'height: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        // Overlay rengi kontrolü.
         $this->add_control(
-            'overlay_color',
+            'button_text_color',
             [
-                'label' => __( 'Overlay Color', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::COLOR,
+                'label' => __( 'Text Color', 'wr-ew' ),
+                'type'  => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .wr-hero-slide::after' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn' => 'color: {{VALUE}};',
                 ],
-                'separator' => 'before',
-            ]
-        );
-
-        // İçerik hizalama.
-        $this->add_responsive_control(
-            'content_alignment',
-            [
-                'label'   => __( 'Content Alignment', 'wr-ew' ),
-                'type'    => \Elementor\Controls_Manager::CHOOSE,
-                'options' => [
-                    'left' => [
-                        'title' => __( 'Left', 'wr-ew' ),
-                        'icon'  => 'eicon-text-align-left',
-                    ],
-                    'center' => [
-                        'title' => __( 'Center', 'wr-ew' ),
-                        'icon'  => 'eicon-text-align-center',
-                    ],
-                    'right' => [
-                        'title' => __( 'Right', 'wr-ew' ),
-                        'icon'  => 'eicon-text-align-right',
-                    ],
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-content' => 'text-align: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        /* ------------------------------
-         * STYLE TAB — CONTENT POSITIONING
-         * ------------------------------ */
-        $this->start_controls_section(
-            'style_position_section',
-            [
-                'label' => __( 'Content Positioning', 'wr-ew' ),
-                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_responsive_control(
-            'content_position_x',
-            [
-                'label' => __( 'Horizontal Position', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::SLIDER,
-                'size_units' => [ '%' ],
-                'range' => [
-                    '%' => [ 'min' => -50, 'max' => 50 ],
-                ],
-                'default' => [
-                    'size' => 0,
-                    'unit' => '%',
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-content' => '--wr-hero-x: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'content_position_y',
-            [
-                'label' => __( 'Vertical Position', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::SLIDER,
-                'size_units' => [ '%' ],
-                'range' => [
-                    '%' => [ 'min' => -50, 'max' => 50 ],
-                ],
-                'default' => [
-                    'size' => 0,
-                    'unit' => '%',
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-content' => '--wr-hero-y: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        /* ------------------------------
-         * STYLE TAB — OVERLAY BACKGROUND
-         * ------------------------------ */
-        $this->start_controls_section(
-            'style_overlay_background_section',
-            [
-                'label' => __( 'Overlay Background', 'wr-ew' ),
-                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_group_control(
-            \Elementor\Group_Control_Background::get_type(),
-            [
-                'name'     => 'overlay_background',
-                'types'    => [ 'classic', 'gradient' ],
-                'selector' => '{{WRAPPER}} .wr-hero-content__panel',
             ]
         );
 
         $this->add_control(
-            'overlay_border_radius',
+            'button_bg_color',
             [
-                'label' => __( 'Border Radius', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', '%', 'em', 'rem' ],
+                'label' => __( 'Background Color', 'wr-ew' ),
+                'type'  => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .wr-hero-content__panel' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_responsive_control(
-            'overlay_padding',
-            [
-                'label' => __( 'Padding', 'wr-ew' ),
-                'type'  => \Elementor\Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', 'em', 'rem', '%' ],
-                'selectors' => [
-                    '{{WRAPPER}} .wr-hero-content__panel' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
 
         $this->add_group_control(
-            \Elementor\Group_Control_Box_Shadow::get_type(),
+            Group_Control_Border::get_type(),
             [
-                'name'     => 'overlay_box_shadow',
-                'selector' => '{{WRAPPER}} .wr-hero-content__panel',
+                'name'     => 'button_border',
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn',
             ]
         );
+
+        $this->add_control(
+            'button_border_radius',
+            [
+                'label'      => __( 'Border Radius', 'wr-ew' ),
+                'type'       => Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', '%' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'button_padding',
+            [
+                'label'      => __( 'Padding', 'wr-ew' ),
+                'type'       => Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'em', '%' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'default' => [
+                    'top' => '12',
+                    'right' => '24',
+                    'bottom' => '12',
+                    'left' => '24',
+                    'unit' => 'px',
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->start_controls_tab(
+            'button_tab_hover',
+            [ 'label' => __( 'Hover', 'wr-ew' ) ]
+        );
+
+        $this->add_control(
+            'button_text_color_hover',
+            [
+                'label' => __( 'Text Color', 'wr-ew' ),
+                'type'  => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn:hover' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_bg_color_hover',
+            [
+                'label' => __( 'Background Color', 'wr-ew' ),
+                'type'  => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn:hover' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+            [
+                'name'     => 'button_box_shadow_hover',
+                'selector' => '{{WRAPPER}} .wr-hero-slider .wr-hero-slide__btn:hover',
+            ]
+        );
+
+        $this->end_controls_tab();
+        $this->end_controls_tabs();
 
         $this->end_controls_section();
     }
 
     protected function render() {
         $settings = $this->get_settings_for_display();
-        if ( empty( $settings['slides'] ) ) {
+
+        if ( empty( $settings['slides'] ) || ! is_array( $settings['slides'] ) ) {
             return;
         }
 
-        echo '<div class="wr-hero-slider-swiper swiper">';
-        echo '<div class="swiper-wrapper">';
+        $this->add_render_attribute( 'wrapper', 'class', 'wr-hero-slider' );
 
-        foreach ( $settings['slides'] as $slide ) {
-
-            $bg = isset( $slide['image']['url'] ) ? $slide['image']['url'] : '';
-
-            echo '<div class="wr-hero-slide swiper-slide" style="background-image:url(' . esc_url( $bg ) . ')">';
-
-            echo '<div class="wr-hero-content">';
-            echo '<div class="wr-hero-content__panel">';
-            if ( ! empty( $slide['title'] ) ) {
-                echo '<h2>' . esc_html( $slide['title'] ) . '</h2>';
-            }
-
-            if ( ! empty( $slide['subtitle'] ) ) {
-                echo '<p>' . esc_html( $slide['subtitle'] ) . '</p>';
-            }
-
-            if ( ! empty( $slide['button_text'] ) ) {
-                $link = $slide['button_link']['url'] ?? '#';
-                echo '<a href="' . esc_url( $link ) . '" class="wr-hero-btn">' . esc_html( $slide['button_text'] ) . '</a>';
-            }
-
-            echo '</div>'; // wr-hero-content__panel
-
-            echo '</div>'; // wr-hero-content
-
-            echo '</div>'; // wr-hero-slide
+        if ( 'yes' === $settings['fullwidth'] ) {
+            $this->add_render_attribute( 'wrapper', 'class', 'is-fullwidth' );
         }
 
-        echo '</div>'; // swiper-wrapper
-        echo '<div class="swiper-pagination"></div>';
-        echo '<div class="swiper-button-prev"></div>';
-        echo '<div class="swiper-button-next"></div>';
-        echo '</div>'; // swiper
+        $this->add_render_attribute( 'wrapper', 'data-autoplay', ( 'yes' === $settings['autoplay'] ) ? 'true' : 'false' );
+        $this->add_render_attribute( 'wrapper', 'data-delay', ! empty( $settings['autoplay_delay'] ) ? $settings['autoplay_delay'] : 4000 );
+        $this->add_render_attribute( 'wrapper', 'data-loop', ( 'yes' === $settings['loop'] ) ? 'true' : 'false' );
+        $this->add_render_attribute( 'wrapper', 'data-arrows', ( 'yes' === $settings['show_arrows'] ) ? 'true' : 'false' );
+        $this->add_render_attribute( 'wrapper', 'data-dots', ( 'yes' === $settings['show_dots'] ) ? 'true' : 'false' );
+
+        ?>
+        <div <?php echo $this->get_render_attribute_string( 'wrapper' ); ?>>
+            <div class="wr-hero-slider-swiper swiper">
+                <div class="swiper-wrapper">
+                    <?php foreach ( $settings['slides'] as $slide ) :
+                        $image_url = ! empty( $slide['image']['url'] ) ? $slide['image']['url'] : Utils::get_placeholder_image_src();
+                        $title     = ! empty( $slide['title'] ) ? $slide['title'] : '';
+                        $subtitle  = ! empty( $slide['subtitle'] ) ? $slide['subtitle'] : '';
+                        $btn_text  = ! empty( $slide['button_text'] ) ? $slide['button_text'] : '';
+                        $btn_link  = ! empty( $slide['button_link']['url'] ) ? $slide['button_link']['url'] : '';
+                        $target    = ( ! empty( $slide['button_new_tab'] ) && 'yes' === $slide['button_new_tab'] ) ? '_blank' : '_self';
+                        $rel       = ( '_blank' === $target ) ? 'noopener noreferrer' : '';
+                        ?>
+                        <div class="swiper-slide wr-hero-slide">
+                            <div class="wr-hero-slide__bg" style="background-image: url('<?php echo esc_url( $image_url ); ?>');"></div>
+                            <div class="wr-hero-slide__content">
+                                <div class="wr-hero-slide__panel">
+                                    <?php if ( $title ) : ?>
+                                        <h2 class="wr-hero-slide__title"><?php echo esc_html( $title ); ?></h2>
+                                    <?php endif; ?>
+
+                                    <?php if ( $subtitle ) : ?>
+                                        <div class="wr-hero-slide__subtitle"><?php echo wp_kses_post( $subtitle ); ?></div>
+                                    <?php endif; ?>
+
+                                    <?php if ( $btn_text && $btn_link ) : ?>
+                                        <a class="wr-hero-slide__btn" href="<?php echo esc_url( $btn_link ); ?>" target="<?php echo esc_attr( $target ); ?>" <?php echo $rel ? 'rel="' . esc_attr( $rel ) . '"' : ''; ?>>
+                                            <?php echo esc_html( $btn_text ); ?>
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </div>
+        <?php
     }
 }
-
