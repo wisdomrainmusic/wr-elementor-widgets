@@ -109,7 +109,7 @@ add_action( 'wp_enqueue_scripts', function() {
                     [
                         'ajax_url' => admin_url( 'admin-ajax.php' ),
                         'nonce'    => wp_create_nonce( 'wr_pg_full_nonce' ),
-                        'debug'    => ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
+                        'debug'    => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? true : false,
                     ]
                 );
             } else {
