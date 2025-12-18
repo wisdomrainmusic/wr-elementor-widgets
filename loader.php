@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 require_once WR_EW_PLUGIN_DIR . 'includes/render-product-card.php';
 require_once WR_EW_PLUGIN_DIR . 'includes/ajax-blog-grid.php';
+require_once WR_EW_PLUGIN_DIR . 'includes/ajax-product-grid-full.php';
 
 /**
  * -------------------------------------------------------
@@ -59,12 +60,13 @@ add_action( 'wp_enqueue_scripts', function() {
      */
     $assets = [
 
-        'hero-slider'     => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
-        'category-slider' => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
+        'hero-slider'        => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
+        'category-slider'    => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
 
-        'blog-grid'       => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'campaign-bar'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'video-banner'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'blog-grid'          => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'campaign-bar'       => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'video-banner'       => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'product-grid-full'  => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
         'instagram-story' => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'testimonials'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
@@ -100,11 +102,23 @@ add_action( 'wp_enqueue_scripts', function() {
                 true
             );
 
-            wp_localize_script(
-                "wr-{$key}-js",
-                'wrEwAjax',
-                [ 'ajax_url' => admin_url( 'admin-ajax.php' ) ]
-            );
+            if ( 'product-grid-full' === $key ) {
+                wp_localize_script(
+                    "wr-{$key}-js",
+                    'wrPgFullData',
+                    [
+                        'ajax_url' => admin_url( 'admin-ajax.php' ),
+                        'nonce'    => wp_create_nonce( 'wr_pg_full_nonce' ),
+                        'debug'    => ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
+                    ]
+                );
+            } else {
+                wp_localize_script(
+                    "wr-{$key}-js",
+                    'wrEwAjax',
+                    [ 'ajax_url' => admin_url( 'admin-ajax.php' ) ]
+                );
+            }
         }
     }
 });
@@ -126,6 +140,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'hero-slider',
         'instagram-story',
         'video-banner',
+        'product-grid-full',
 
         // ✅ Yeni nesil (inline)
         'product-full-tabs',
@@ -141,6 +156,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'product-full-tabs'  => 'WR_EW_Product_Full_Tabs',
         'featured-card-full' => 'WR_EW_Featured_Card_Full',
         'hero-banner-full'   => 'WR_EW_Hero_Banner_Full',
+        'product-grid-full'  => 'WR_EW_Product_Grid_Full',
     ];
 
     foreach ( $widget_dirs as $widget ) {

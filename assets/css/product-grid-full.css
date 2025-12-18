@@ -1,0 +1,231 @@
+.wr-pg-full {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.wr-pg-full__sidebar {
+    background: #f7f7f7;
+    padding: 16px;
+    border-radius: 12px;
+    position: relative;
+}
+
+.wr-pg-full__sidebar-toggle {
+    display: none;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.wr-pg-full__sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wr-pg-full__cat {
+    text-align: left;
+    border: 0;
+    background: transparent;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    width: 100%;
+}
+
+.wr-pg-full__cat:hover,
+.wr-pg-full__cat.is-active {
+    background: #ececec;
+}
+
+.wr-pg-full__more {
+    margin-top: 8px;
+}
+
+.wr-pg-full__more-toggle {
+    width: 100%;
+    border: 1px dashed #ccc;
+    background: #fff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.wr-pg-full__more-list {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wr-pg-full__content {
+    width: 100%;
+    overflow: hidden;
+}
+
+.wr-pg-full__grid {
+    display: grid;
+    gap: 20px;
+}
+
+.wr-pg-full.is-cols-3 .wr-pg-full__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.wr-pg-full.is-cols-4 .wr-pg-full__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.wr-pg-full__item {
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.wr-pg-full__thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.wr-pg-full__meta {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.wr-pg-full__title {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.wr-pg-full__price {
+    font-weight: 600;
+}
+
+.wr-pg-full__actions {
+    margin-top: auto;
+}
+
+.wr-pg-full__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    border: 1px solid #111;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.wr-pg-full__btn:hover {
+    background: #333;
+    color: #fff;
+}
+
+.wr-pg-full__pagination {
+    margin-top: 20px;
+}
+
+.wr-pg-full__pagination-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.wr-pg-full__page {
+    border: 1px solid #d4d4d4;
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.wr-pg-full__page.is-active,
+.wr-pg-full__page:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+.wr-pg-full__empty {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    border: 1px dashed #ddd;
+    border-radius: 10px;
+}
+
+.wr-pg-full.is-loading .wr-pg-full__grid .wr-pg-full__item--skeleton {
+    min-height: 220px;
+    background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
+    background-size: 400% 100%;
+    animation: wr-pg-full-skeleton 1.4s ease infinite;
+    border-radius: 12px;
+}
+
+@keyframes wr-pg-full-skeleton {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .wr-pg-full {
+        grid-template-columns: 220px 1fr;
+    }
+
+    .wr-pg-full__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .wr-pg-full {
+        grid-template-columns: 1fr;
+    }
+
+    .wr-pg-full__sidebar-toggle {
+        display: block;
+    }
+
+    .wr-pg-full__sidebar {
+        position: relative;
+    }
+
+    .wr-pg-full__sidebar-inner {
+        display: none;
+    }
+
+    .wr-pg-full__sidebar.is-open .wr-pg-full__sidebar-inner {
+        display: flex;
+    }
+
+    .wr-pg-full__grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
