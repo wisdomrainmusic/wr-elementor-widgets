@@ -63,10 +63,11 @@ add_action( 'wp_enqueue_scripts', function() {
         'hero-slider'        => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
         'category-slider'    => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
 
-        'blog-grid'          => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'video-banner'       => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'product-grid-full'  => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'testimonial-full'   => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
+        'blog-grid'            => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'video-banner'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'product-grid-full'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'testimonial-full'     => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
+        'campaign-bar-full'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
         'instagram-story' => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'usp-row'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
@@ -111,6 +112,14 @@ add_action( 'wp_enqueue_scripts', function() {
                         'debug'    => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? true : false,
                     ]
                 );
+            } elseif ( 'campaign-bar-full' === $key ) {
+                wp_localize_script(
+                    "wr-{$key}-js",
+                    'wrCampaignBarFullData',
+                    [
+                        'debug' => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? true : false,
+                    ]
+                );
             } else {
                 wp_localize_script(
                     "wr-{$key}-js",
@@ -140,6 +149,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'video-banner',
         'product-grid-full',
         'testimonial-full',
+        'campaign-bar-full',
 
         // ✅ Yeni nesil (inline)
         'product-full-tabs',
