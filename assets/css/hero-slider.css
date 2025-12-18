@@ -1,172 +1,133 @@
+.wr-hero-slider {
+  --wr-hero-height: 550px;
+  --wr-hero-x: 0px;
+  --wr-hero-y: 0px;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.wr-hero-slider,
+.wr-hero-slider * {
+  box-sizing: border-box;
+}
+
+.wr-hero-slider.is-fullwidth {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  margin-left: -50vw;
+  overflow-x: clip;
+}
+
 .wr-hero-slider-swiper {
-    width: 100%;
-    position: relative;
-    overflow: hidden; /* safety: prevent horizontal overflow on mobile */
-    background-color: transparent !important;
+  width: 100%;
+  overflow: hidden;
 }
 
-.wr-hero-slide {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    height: 550px;
-    background-size: contain !important;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: transparent !important;
+.wr-hero-slider-swiper,
+.wr-hero-slider .wr-hero-slide,
+.wr-hero-slider .wr-hero-slide__content {
+  max-width: 100%;
 }
 
-/* Overlay katmanı (Elementor'daki Overlay Color bunu override eder) */
-.wr-hero-slide::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: transparent; /* default: no overlay */
-    pointer-events: none;
+.wr-hero-slider.is-fullwidth .wr-hero-slider-swiper {
+  overflow: hidden;
 }
 
-.wr-hero-slide::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: transparent !important;
-    pointer-events: none;
+.wr-hero-slider .swiper-wrapper {
+  align-items: stretch;
 }
 
-.wr-hero-content {
-    position: absolute;
-    inset: 0;
-    --wr-hero-x: 0;
-    --wr-hero-y: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 24px;
-    text-align: center;
-    color: #ffffff;
-    z-index: 2;
+.wr-hero-slider .wr-hero-slide {
+  position: relative;
+  height: var(--wr-hero-height, 550px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
 }
 
-.wr-hero-content__panel {
-    width: 100%;
-    max-width: inherit;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-    box-shadow: none;
-    transform: translate(var(--wr-hero-x, 0), var(--wr-hero-y, 0));
-    transition: transform 0.2s ease;
+.wr-hero-slider .wr-hero-slide__bg {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.wr-hero-content h2 {
-    font-size: 48px;
-    line-height: 1.1;
-    margin-bottom: 12px;
+.wr-hero-slider .wr-hero-slide__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  overflow: hidden;
 }
 
-.wr-hero-content p {
-    font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    opacity: 0.95;
+.wr-hero-slider .wr-hero-slide__panel {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 12px;
+  transform: translate(var(--wr-hero-x, 0px), var(--wr-hero-y, 0px));
+  background: transparent;
 }
 
-.wr-hero-btn {
-    display: inline-block;
-    padding: 12px 30px;
-    background: #ffffff;
-    color: #000000;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-    z-index: 3;
+.wr-hero-slider .wr-hero-slide__title {
+  margin: 0;
+  font-size: 36px;
+  line-height: 1.2;
 }
 
-.wr-hero-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+.wr-hero-slider .wr-hero-slide__subtitle {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
 }
 
-/* Swiper navigation arrows */
-.wr-hero-slider-swiper .swiper-button-prev,
-.wr-hero-slider-swiper .swiper-button-next {
-    color: #ffffff;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+.wr-hero-slider .wr-hero-slide__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
-.wr-hero-slider-swiper .swiper-button-prev::after,
-.wr-hero-slider-swiper .swiper-button-next::after {
-    font-size: 18px;
+.wr-hero-slider .wr-hero-slide__btn:hover {
+  text-decoration: none;
 }
 
-.wr-hero-slider-swiper .swiper-button-prev:hover,
-.wr-hero-slider-swiper .swiper-button-next:hover {
-    background: rgba(0, 0, 0, 0.6);
-    transform: translateY(-1px);
+.wr-hero-slider .swiper-pagination {
+  bottom: 16px;
 }
 
-/* Swiper pagination dots */
-.wr-hero-slider-swiper .swiper-pagination-bullet {
-    background: rgba(255, 255, 255, 0.5);
-    opacity: 1;
+.wr-hero-slider .swiper-button-prev,
+.wr-hero-slider .swiper-button-next {
+  color: #000;
 }
 
-.wr-hero-slider-swiper .swiper-pagination-bullet-active {
-    background: #ffffff;
-}
-
-@media (max-width: 1024px) {
-    .wr-hero-slide {
-        height: 420px;
-    }
-
-    .wr-hero-content h2 {
-        font-size: 36px;
-    }
-
-    .wr-hero-content p {
-        font-size: 16px;
-    }
+.wr-hero-slider.is-fullwidth .wr-hero-slider-swiper,
+.wr-hero-slider.is-fullwidth .wr-hero-slide,
+.wr-hero-slider.is-fullwidth .wr-hero-slide__content {
+  max-width: 100%;
 }
 
 @media (max-width: 767px) {
-    .wr-hero-slide {
-        height: 320px;
-    }
+  .wr-hero-slider .wr-hero-slide__title {
+    font-size: 28px;
+  }
 
-    .wr-hero-content {
-        padding: 16px;
-    }
-
-    .wr-hero-content h2 {
-        font-size: 28px;
-    }
-
-    .wr-hero-content p {
-        font-size: 14px;
-    }
-
-    .wr-hero-slider-swiper .swiper-button-prev,
-    .wr-hero-slider-swiper .swiper-button-next {
-        width: 32px;
-        height: 32px;
-    }
+  .wr-hero-slider .wr-hero-slide__subtitle {
+    font-size: 16px;
+  }
 }
