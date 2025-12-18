@@ -6,7 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * REQUIRED FILES
  * -------------------------------------------------------
  */
-require_once WR_EW_PLUGIN_DIR . 'includes/ajax-product-grid.php';
 require_once WR_EW_PLUGIN_DIR . 'includes/render-product-card.php';
 require_once WR_EW_PLUGIN_DIR . 'includes/ajax-blog-grid.php';
 
@@ -67,9 +66,6 @@ add_action( 'wp_enqueue_scripts', function() {
         'campaign-bar'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'video-banner'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
-        // ✅ Product Grid: CSS normal, JS özel (wr-grid-js)
-        'product-grid'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
-
         'instagram-story' => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'testimonials'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'usp-row'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
@@ -94,38 +90,6 @@ add_action( 'wp_enqueue_scripts', function() {
 
         // JS
         if ( ! empty( $config['js'] ) ) {
-
-            /**
-             * ✅ Product Grid Special Case:
-             * - Only enqueue wr-grid-js (assets/js/wr-grid.js)
-             * - Localize wrGridData (ajax_url + nonce)
-             * - Do NOT enqueue wr-product-grid-js (assets/js/product-grid.js)
-             */
-            if ( $key === 'product-grid' ) {
-
-                if ( ! wp_script_is( 'wr-grid-js', 'enqueued' ) ) {
-                    wp_enqueue_script(
-                        'wr-grid-js',
-                        WR_EW_PLUGIN_URL . 'assets/js/wr-grid.js',
-                        [ 'jquery' ],
-                        '2.2',
-                        true
-                    );
-                }
-
-                wp_localize_script(
-                    'wr-grid-js',
-                    'wrGridData',
-                    [
-                        'ajax_url' => admin_url( 'admin-ajax.php' ),
-                        'nonce'    => wp_create_nonce( 'wr_pg_nonce' ),
-                        'debug'    => defined( 'WP_DEBUG' ) && WP_DEBUG,
-                    ]
-                );
-
-                // Product-grid için generic enqueue’yi SKIP et
-                continue;
-            }
 
             // Generic enqueue (diğer widgetlar)
             wp_enqueue_script(
@@ -161,7 +125,6 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'category-slider',
         'hero-slider',
         'instagram-story',
-        'product-grid',
         'video-banner',
 
         // ✅ Yeni nesil (inline)

@@ -21,8 +21,6 @@ add_action( 'wp_enqueue_scripts', function() {
 // Load plugin loader.
 require_once WR_EW_PLUGIN_DIR . 'loader.php';
 
-add_action( 'wp_ajax_wr_filter_products', 'wr_filter_products' );
-add_action( 'wp_ajax_nopriv_wr_filter_products', 'wr_filter_products' );
 add_action( 'wp_ajax_wr_update_wishlist', 'wr_update_wishlist' );
 add_shortcode( 'wr_wishlist', 'wr_wishlist_shortcode' );
 add_action( 'wp_footer', 'wr_render_wishlist_fab' );
@@ -132,9 +130,12 @@ function wr_wishlist_shortcode() {
             $query->the_post();
 
             $product         = wc_get_product( get_the_ID() );
-            $wr_card_context = 'wishlist';
 
-            include WR_EW_PLUGIN_DIR . 'widgets/product-grid/card.php';
+            if ( function_exists( 'wr_render_product_card' ) && $product ) {
+                wr_render_product_card( $product, 'wishlist' );
+            } else {
+                wc_get_template_part( 'content', 'product' );
+            }
         }
         wp_reset_postdata();
     }
@@ -152,53 +153,4 @@ function wr_render_wishlist_fab() {
     echo '<span class="wr-fab-heart">❤</span>';
     echo '<span class="wr-wishlist-count">0</span>';
     echo '</a>';
-}
-
-function wr_filter_products() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-        exit;
-    }
-
-    check_ajax_referer( 'wr_grid_nonce', 'nonce' );
-
-    $page = isset( $_POST['page'] ) ? max( 1, intval( $_POST['page'] ) ) : 1;
-    $cat  = isset( $_POST['cat'] )  ? absint( $_POST['cat'] )          : 0;
-
-    $args = [
-        'post_type'      => 'product',
-        'posts_per_page' => 12,
-        'paged'          => $page,
-    ];
-
-    // Kategori filtresi
-    if ( $cat ) {
-        $args['tax_query'] = [
-            [
-                'taxonomy' => 'product_cat',
-                'field'    => 'term_id',
-                'terms'    => $cat,
-            ],
-        ];
-    }
-
-    $query = new WP_Query( $args );
-
-    ob_start();
-
-    if ( $query->have_posts() ) {
-        while ( $query->have_posts() ) {
-            $query->the_post();
-            global $product;
-            // TAM BURASI: Grid ve Ajax her yerde aynı kartı kullanıyor
-            include WR_EW_PLUGIN_DIR . 'widgets/product-grid/card.php';
-        }
-    } else {
-        echo '<p>No products found.</p>';
-    }
-
-    wp_reset_postdata();
-
-    echo ob_get_clean();
-    wp_die();
 }
