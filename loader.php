@@ -69,7 +69,6 @@ add_action( 'wp_enqueue_scripts', function() {
         'product-grid-full'  => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
         'instagram-story' => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'testimonials'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'usp-row'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
         // ✅ INLINE (CSS/JS widget içinde)
@@ -147,7 +146,6 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'featured-card-full',
         'hero-banner-full',
 
-        'testimonials',
         'usp-row',
     ];
 
