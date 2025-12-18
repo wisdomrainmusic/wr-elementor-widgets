@@ -67,6 +67,7 @@ add_action( 'wp_enqueue_scripts', function() {
         'campaign-bar'       => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'video-banner'       => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'product-grid-full'  => [ 'css' => true, 'js' => [ 'jquery' ] ],
+        'testimonial-full'   => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
 
         'instagram-story' => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'usp-row'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
@@ -140,6 +141,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'instagram-story',
         'video-banner',
         'product-grid-full',
+        'testimonial-full',
 
         // ✅ Yeni nesil (inline)
         'product-full-tabs',
@@ -155,6 +157,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'featured-card-full' => 'WR_EW_Featured_Card_Full',
         'hero-banner-full'   => 'WR_EW_Hero_Banner_Full',
         'product-grid-full'  => 'WR_EW_Product_Grid_Full',
+        'testimonial-full'   => 'WR_EW_Testimonial_Full',
     ];
 
     foreach ( $widget_dirs as $widget ) {
