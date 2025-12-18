@@ -36,6 +36,8 @@
 .wr-hero-content {
     position: absolute;
     inset: 0;
+    --wr-hero-x: 0;
+    --wr-hero-y: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,6 +48,21 @@
     text-align: center;
     color: #ffffff;
     z-index: 2;
+}
+
+.wr-hero-content__panel {
+    width: 100%;
+    max-width: inherit;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    transform: translate(var(--wr-hero-x, 0), var(--wr-hero-y, 0));
+    transition: transform 0.2s ease;
 }
 
 .wr-hero-content h2 {
