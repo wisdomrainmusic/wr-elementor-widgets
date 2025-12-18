@@ -1,146 +1,96 @@
-(function($) {
-    'use strict';
+.wr-product-grid-wrapper{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:40px;
+  align-items:flex-start;
+}
 
-    var config = window.wrGridData || {};
-    var gridSelector = '[data-widget="product-grid"]';
-    var paginationSelector = gridSelector + ' .wr-pagination a';
+.wr-filter-sidebar{
+  border-radius:12px;
+  overflow:hidden;
+}
 
-    function buildSkeleton(count) {
-        var html = '';
-        for (var i = 0; i < count; i++) {
-            html += '<div class="wr-product-item wr-skeleton">';
-            html += '<div class="wr-skel-image"></div>';
-            html += '<div class="wr-skel-line"></div>';
-            html += '<div class="wr-skel-line short"></div>';
-            html += '</div>';
-        }
-        return html;
-    }
+.wr-filter-header{
+  display:none;
+  font-weight:600;
+  cursor:pointer;
+  user-select:none;
+  padding:10px 0;
+}
 
-    function getWidgetGrid($element) {
-        var $wrapper = $element.closest('.wr-product-grid-wrapper');
-        if ($wrapper.length) {
-            var $grid = $wrapper.find(gridSelector).first();
-            if ($grid.length) {
-                return $grid;
-            }
-        }
+.wr-cat-list-wrap{
+  max-height:560px;
+  overflow:auto;
+}
 
-        return $element.closest(gridSelector);
-    }
+.wr-cat-list{ list-style:none; margin:0; padding:0; }
+.wr-cat-item{ cursor:pointer; padding:6px 0; transition:.2s ease; }
+.wr-cat-item:hover{ transform:translateX(4px); }
+.wr-cat-item.is-active{ font-weight:600; border-left:3px solid #000; padding-left:10px; }
 
-    function getActiveCategory($wrapper) {
-        var $activeCat = $wrapper.find('.wr-filter-sidebar li.active');
-        if ($activeCat.length) {
-            return $activeCat.data('cat') || 0;
-        }
-        return 0;
-    }
+.wr-ajax-grid.wr-loading{ opacity:.55; pointer-events:none; transition:opacity .2s ease; }
 
-    function getPageFromLink($link) {
-        var href = $link.attr('href') || '';
-        var pageMatch = href.match(/(?:paged=|page\/)(\d+)/);
-        var text = $link.text().trim();
+.wr-product-items{
+  display:grid;
+  gap:30px;
+}
 
-        if (pageMatch && pageMatch[1]) {
-            return parseInt(pageMatch[1], 10) || 1;
-        }
+.wr-product-grid-wrapper[data-columns="2"] .wr-product-items{ grid-template-columns:repeat(2,1fr); }
+.wr-product-grid-wrapper[data-columns="3"] .wr-product-items{ grid-template-columns:repeat(3,1fr); }
+.wr-product-grid-wrapper[data-columns="4"] .wr-product-items{ grid-template-columns:repeat(4,1fr); }
 
-        var textNumber = parseInt(text, 10);
-        return isNaN(textNumber) ? 1 : textNumber;
-    }
+.wr-pagination{
+  margin-top:40px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
 
-    function loadFilteredProducts($grid, cat, page) {
-        if (!$grid.length || !config.ajax_url) return;
+.wr-pagination .page-numbers{
+  display:inline-block;
+  padding:10px 16px;
+  border-radius:8px;
+  background:#f5f5f5;
+  color:#333;
+  font-weight:600;
+  transition:.2s;
+}
 
-        var $items = $grid.find('.wr-product-items');
-        var perPage = parseInt($items.data('per-page') || $grid.data('per-page') || 12, 10);
+.wr-pagination .page-numbers.current{ background:#1a73e8; color:#fff; }
+.wr-pagination a.page-numbers:hover{ background:#e0e0e0; }
 
-        $items
-            .addClass('is-loading')
-            .html(buildSkeleton(perPage));
+/* Skeleton */
+.wr-product-item.wr-skeleton{
+  padding:16px;
+  background:#f4f4f4;
+  border-radius:12px;
+  animation: wr-skeleton-pulse 1.2s ease-in-out infinite;
+}
+.wr-skel-image{ width:100%; padding-top:75%; border-radius:10px; background:#e3e3e3; margin-bottom:10px; }
+.wr-skel-line{ height:10px; border-radius:999px; background:#e3e3e3; margin-bottom:6px; }
+.wr-skel-line.short{ width:60%; }
+@keyframes wr-skeleton-pulse{ 0%{opacity:1} 50%{opacity:.5} 100%{opacity:1} }
 
-        $.ajax({
-            url: config.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'wr_filter_products',
-                cat: cat || 0,
-                page: page || 1,
-                nonce: config.nonce
-            },
-            success: function(response) {
-                $items
-                    .removeClass('is-loading')
-                    .hide()
-                    .html(response)
-                    .fadeIn(150);
-            },
-            error: function() {
-                $items.removeClass('is-loading');
-            }
-        });
-    }
+/* Responsive */
+@media (max-width: 900px){
+  .wr-product-grid-wrapper{ grid-template-columns:1fr; gap:24px; }
+  .wr-filter-header{ display:block; }
+  .wr-cat-list-wrap{ display:none; }
+  .wr-filter-sidebar.is-open .wr-cat-list-wrap{ display:block; }
 
-    function loadGridPage($grid, page, cat) {
-        if (!$grid.length || !config.ajax_url) return;
+  /* ✅ Mobilde sola yaslanma / container taşma fix */
+  .wr-ajax-grid, .wr-product-items{
+    width:100%;
+    max-width:100%;
+  }
+}
 
-        $grid.addClass('wr-loading');
+@media (max-width: 1024px){
+  .wr-product-items{ grid-template-columns: repeat(2, 1fr) !important; gap: 24px !important; }
+}
 
-        $.ajax({
-            url: config.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'wr_ajax_load_products',
-                page: page || 1,
-                cat: cat || 0,
-                nonce: config.nonce
-            },
-            success: function(html) {
-                $grid
-                    .removeClass('wr-loading')
-                    .html(html);
-            },
-            error: function() {
-                $grid.removeClass('wr-loading');
-            }
-        });
-    }
-
-    $(document).on('click', '.wr-filter-sidebar li[data-cat]', function() {
-        var $item = $(this);
-        var $grid = getWidgetGrid($item);
-
-        if (!$grid.length) return;
-
-        var $wrapper = $grid.closest('.wr-product-grid-wrapper');
-        $wrapper.find('.wr-filter-sidebar li').removeClass('active');
-        $item.addClass('active');
-
-        loadFilteredProducts($grid, $item.data('cat') || 0, 1);
-    });
-
-    $(document).on('click', paginationSelector, function(e) {
-        var $link = $(this);
-        var $grid = getWidgetGrid($link);
-
-        if (!$grid.length) return;
-
-        e.preventDefault();
-
-        var page = getPageFromLink($link);
-        var cat = getActiveCategory($grid.closest('.wr-product-grid-wrapper'));
-
-        loadGridPage($grid, page, cat);
-    });
-
-    $(document).on('click', '.wr-filter-header', function() {
-        var $header = $(this);
-        var $wrapper = $header.closest('.wr-product-grid-wrapper');
-
-        if (!$wrapper.find(gridSelector).length) return;
-
-        $header.toggleClass('is-open');
-        $header.siblings('ul').slideToggle(150);
-    });
-})(jQuery);
+@media (max-width: 767px){
+  .wr-product-items{ grid-template-columns: 1fr !important; gap: 28px !important; }
+}
