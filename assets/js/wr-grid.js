@@ -114,6 +114,8 @@
       },
       error: function (xhr) {
         debugLog("WR Grid AJAX error", xhr && xhr.status, xhr && xhr.responseText);
+        // eslint-disable-next-line no-console
+        console.error("WR Grid AJAX error", xhr && xhr.status, xhr && xhr.responseText);
         $items.html(previousItems);
         $pag.html(previousPagination);
         stopLoading($grid);

@@ -88,12 +88,13 @@ class WR_EW_Product_Grid extends Widget_Base {
 		$columns  = ! empty( $s['columns'] ) ? (string) $s['columns'] : '3';
 		$per_page = ! empty( $s['per_page'] ) ? max( 1, absint( $s['per_page'] ) ) : 12;
 
-		$nonce = wp_create_nonce( 'wr_grid_nonce' );
+                $nonce = wp_create_nonce( 'wr_pg_nonce' );
 
 		// JS config (widget bazlı garanti)
 		$inline = 'window.wrGridData = window.wrGridData || {};'
 		        . 'window.wrGridData.ajax_url = ' . wp_json_encode( admin_url( 'admin-ajax.php' ) ) . ';'
-		        . 'window.wrGridData.nonce = ' . wp_json_encode( $nonce ) . ';';
+                        . 'window.wrGridData.nonce = ' . wp_json_encode( $nonce ) . ';'
+                        . 'window.wrGridData.debug = ' . ( defined( 'WP_DEBUG' ) && WP_DEBUG ? 'true' : 'false' ) . ';';
 		wp_add_inline_script( 'wr-grid-js', $inline, 'before' );
 
 		$categories = get_terms( [
@@ -161,23 +162,30 @@ class WR_EW_Product_Grid extends Widget_Base {
  * AJAX
  * - tek action
  * - JSON response
- * - nonce hatasında 403 (400 değil) -> debug kolay
+ * - nonce hatasında 400 -> debug kolay
  */
 if ( ! function_exists( 'wr_pg_filter_products' ) ) {
-	function wr_pg_filter_products() {
+        function wr_pg_filter_products() {
 
-		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
-		if ( ! $nonce || ! wp_verify_nonce( $nonce, 'wr_grid_nonce' ) ) {
-			wp_send_json_error( [ 'message' => 'Invalid nonce' ], 403 );
-		}
+                if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                        error_log( 'WR_PG AJAX POST: ' . wp_json_encode( $_POST ) );
+                }
 
-		$page     = isset( $_POST['page'] ) ? max( 1, absint( $_POST['page'] ) ) : 1;
-		$cat      = isset( $_POST['cat'] ) ? absint( $_POST['cat'] ) : 0;
-		$per_page = isset( $_POST['per_page'] ) ? max( 1, absint( $_POST['per_page'] ) ) : 12;
+                if ( ! check_ajax_referer( 'wr_pg_nonce', 'nonce', false ) ) {
+                        wp_send_json_error( [ 'message' => 'Invalid nonce' ], 400 );
+                }
 
-		$args = [
-			'post_type'      => 'product',
-			'posts_per_page' => $per_page,
+                if ( ! isset( $_POST['cat'], $_POST['page'], $_POST['per_page'] ) ) {
+                        wp_send_json_error( [ 'message' => 'Missing parameters' ], 400 );
+                }
+
+                $cat      = absint( wp_unslash( $_POST['cat'] ) );
+                $page     = max( 1, absint( wp_unslash( $_POST['page'] ) ) );
+                $per_page = min( 60, max( 1, absint( wp_unslash( $_POST['per_page'] ) ) ) );
+
+                $args = [
+                        'post_type'      => 'product',
+                        'posts_per_page' => $per_page,
 			'paged'          => $page,
 		];
 

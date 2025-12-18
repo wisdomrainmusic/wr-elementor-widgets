@@ -118,7 +118,7 @@ add_action( 'wp_enqueue_scripts', function() {
                     'wrGridData',
                     [
                         'ajax_url' => admin_url( 'admin-ajax.php' ),
-                        'nonce'    => wp_create_nonce( 'wr_grid_nonce' ),
+                        'nonce'    => wp_create_nonce( 'wr_pg_nonce' ),
                         'debug'    => defined( 'WP_DEBUG' ) && WP_DEBUG,
                     ]
                 );
