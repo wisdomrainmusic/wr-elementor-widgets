@@ -60,7 +60,7 @@ add_action( 'wp_enqueue_scripts', function() {
      */
     $assets = [
 
-        'hero-slider'        => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
+        'hero-slider'        => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
         'category-slider'    => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
 
         'blog-grid'          => [ 'css' => true, 'js' => [ 'jquery' ] ],
