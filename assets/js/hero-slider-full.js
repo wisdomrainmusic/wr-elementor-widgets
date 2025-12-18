@@ -47,6 +47,52 @@
 
       var swiper = new Swiper(swiperEl, config);
 
+      // --- Autoplay fallback (in case Swiper Autoplay module is not bundled) ---
+      function clearFallback() {
+        if (root.__wrAutoplayTimer) {
+          clearInterval(root.__wrAutoplayTimer);
+          root.__wrAutoplayTimer = null;
+        }
+      }
+
+      function startFallback() {
+        clearFallback();
+        var d = isNaN(delay) ? 5000 : delay;
+
+        root.__wrAutoplayTimer = setInterval(function () {
+          if (!swiper || swiper.destroyed) return;
+
+          if (loop) {
+            swiper.slideNext();
+            return;
+          }
+
+          // no loop: go next, if end jump to 0
+          if (swiper.isEnd) {
+            swiper.slideTo(0);
+          } else {
+            swiper.slideNext();
+          }
+        }, d);
+      }
+
+      if (autoplayOn) {
+        // If Swiper has autoplay module, start it. Otherwise, use fallback.
+        if (swiper.autoplay && typeof swiper.autoplay.start === 'function') {
+          swiper.autoplay.start();
+        } else {
+          startFallback();
+
+          if (pauseHover) {
+            $root.off('mouseenter.wrHeroAuto mouseleave.wrHeroAuto')
+              .on('mouseenter.wrHeroAuto', function () { clearFallback(); })
+              .on('mouseleave.wrHeroAuto', function () { startFallback(); });
+          }
+        }
+      } else {
+        clearFallback();
+      }
+
       function updateTabs(activeIndex) {
         if (!$tabs.length) return;
         $tabs.removeClass('is-active');
@@ -60,7 +106,11 @@
         $tabs.each(function (idx) {
           $(this).off('click.wrHeroFull').on('click.wrHeroFull', function () {
             if (swiper) {
-              swiper.slideTo(idx);
+              if (swiper.params && swiper.params.loop && typeof swiper.slideToLoop === 'function') {
+                swiper.slideToLoop(idx);
+              } else {
+                swiper.slideTo(idx);
+              }
             }
           });
         });
