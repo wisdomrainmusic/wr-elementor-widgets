@@ -87,6 +87,38 @@ class WR_EW_Hero_Slider_Full extends \Elementor\Widget_Base {
             'default' => 'yes',
         ]);
 
+        $this->add_control('loop', [
+            'label' => __( 'Loop', 'wr-ew' ),
+            'type' => \Elementor\Controls_Manager::SWITCHER,
+            'return_value' => 'yes',
+            'default' => '',
+        ]);
+
+        $this->add_control('autoplay', [
+            'label' => __( 'Autoplay', 'wr-ew' ),
+            'type' => \Elementor\Controls_Manager::SWITCHER,
+            'return_value' => 'yes',
+            'default' => '',
+        ]);
+
+        $this->add_control('autoplay_delay', [
+            'label' => __( 'Autoplay Delay (ms)', 'wr-ew' ),
+            'type' => \Elementor\Controls_Manager::NUMBER,
+            'min' => 1000,
+            'max' => 20000,
+            'step' => 250,
+            'default' => 5000,
+            'condition' => [ 'autoplay' => 'yes' ],
+        ]);
+
+        $this->add_control('pause_on_hover', [
+            'label' => __( 'Pause on Hover', 'wr-ew' ),
+            'type' => \Elementor\Controls_Manager::SWITCHER,
+            'return_value' => 'yes',
+            'default' => 'yes',
+            'condition' => [ 'autoplay' => 'yes' ],
+        ]);
+
         $this->end_controls_section();
 
         // Layout
@@ -424,8 +456,18 @@ class WR_EW_Hero_Slider_Full extends \Elementor\Widget_Base {
         $is_hero = (isset($settings['full_width_hero']) && $settings['full_width_hero'] === 'yes') ? 'is-hero' : '';
         $has_tabs = (isset($settings['show_tabs']) && $settings['show_tabs'] === 'yes') ? 'has-tabs' : 'no-tabs';
 
+        $loop = (!empty($settings['loop']) && $settings['loop'] === 'yes') ? '1' : '0';
+        $autoplay = (!empty($settings['autoplay']) && $settings['autoplay'] === 'yes') ? '1' : '0';
+        $delay = !empty($settings['autoplay_delay']) ? (int) $settings['autoplay_delay'] : 5000;
+        $pauseHover = (!empty($settings['pause_on_hover']) && $settings['pause_on_hover'] === 'yes') ? '1' : '0';
+
         ?>
-        <div class="wr-hero-slider-full <?php echo esc_attr($is_hero . ' ' . $has_tabs); ?>" data-wr-hero-slider-full="<?php echo esc_attr($uid); ?>">
+        <div class="wr-hero-slider-full <?php echo esc_attr($is_hero . ' ' . $has_tabs); ?>"
+             data-wr-hero-slider-full="<?php echo esc_attr($uid); ?>"
+             data-loop="<?php echo esc_attr($loop); ?>"
+             data-autoplay="<?php echo esc_attr($autoplay); ?>"
+             data-delay="<?php echo esc_attr($delay); ?>"
+             data-pause-hover="<?php echo esc_attr($pauseHover); ?>">
             <div class="wr-hero-slider-full__inner">
 
                 <div class="wr-hero-slider-full__swiper swiper" id="<?php echo esc_attr($uid); ?>">
