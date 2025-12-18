@@ -1,16 +1,25 @@
 .wr-testimonials-wrap{
   display:flex;
   width:100%;
+  min-width: 0;
 }
 
 .wr-testimonials{
   width:100%;
   margin:0 auto;
   position:relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .wr-testimonials .swiper{
-  overflow: visible;
+  overflow: hidden;
+}
+
+.wr-testimonials .swiper-wrapper,
+.wr-testimonials .swiper-slide{
+  max-width: 100%;
 }
 
 .wr-testimonial-card{
@@ -121,8 +130,16 @@
   z-index:10;
 }
 
-.wr-t-prev{ left:-14px; }
-.wr-t-next{ right:-14px; }
+.wr-t-prev{ left: 8px; }
+.wr-t-next{ right: 8px; }
+
+/* On large screens, keep the original "outside" arrow look */
+@media (min-width: 1025px) {
+  .wr-testimonials{ overflow: visible; }
+  .wr-testimonials .swiper{ overflow: visible; }
+  .wr-t-prev{ left:-14px; }
+  .wr-t-next{ right:-14px; }
+}
 
 .wr-t-prev:hover,
 .wr-t-next:hover{
