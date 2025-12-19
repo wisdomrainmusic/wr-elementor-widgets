@@ -141,6 +141,106 @@ class WR_EW_Instagram_Story extends \Elementor\Widget_Base {
            STYLE TAB
         ------------------------------------------------- */
         $this->start_controls_section(
+            'section_highlight_style',
+            [
+                'label' => __( 'Highlight', 'wr-elementor-widgets' ),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_responsive_control(
+            'highlight_bubble_size',
+            [
+                'label' => __( 'Highlight Bubble Size', 'wr-elementor-widgets' ),
+                'type'  => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 40,
+                        'max' => 200,
+                    ],
+                ],
+                'desktop_default' => [
+                    'size' => 88,
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => 72,
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => 60,
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-is-thumb' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}}; border-radius: 50%;',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'highlight_image_size',
+            [
+                'label' => __( 'Highlight Image Size', 'wr-elementor-widgets' ),
+                'type'  => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 30,
+                        'max' => 180,
+                    ],
+                ],
+                'desktop_default' => [
+                    'size' => 76,
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => 60,
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => 52,
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-is-thumb img' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}}; object-fit: cover; border-radius: 50%;',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'highlight_item_gap',
+            [
+                'label' => __( 'Highlight Item Gap', 'wr-elementor-widgets' ),
+                'type'  => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 40,
+                    ],
+                ],
+                'desktop_default' => [
+                    'size' => 16,
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => 12,
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => 10,
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-instagram-story-list' => 'gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        $this->start_controls_section(
             'section_style',
             [
                 'label' => __( 'Style', 'wr-elementor-widgets' ),
@@ -340,4 +440,3 @@ class WR_EW_Instagram_Story extends \Elementor\Widget_Base {
         <?php
     }
 }
-
