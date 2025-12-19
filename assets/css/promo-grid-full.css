@@ -272,19 +272,47 @@
 
 /* Tablet adjustments */
 @media (max-width: 1024px) {
-  /* Tablet: force single column for stability (mosaic presets won't break) */
-  .wr-promo-grid-full .wr-pgfull__grid {
-    grid-template-columns: 1fr !important;
+  /* Default tablet behavior: 2 columns for non-mosaic presets */
+  .wr-pgfull__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /*
+   * IMPORTANT:
+   * Do NOT reset grid-template-areas globally, because mosaic presets rely on areas.
+   * Reset areas ONLY for non-mosaic presets.
+   */
+  .wr-pgfull__grid:not(.wr-pgfull__grid--three_mosaic_left):not(.wr-pgfull__grid--three_mosaic_right):not(.wr-pgfull__grid--four_mosaic_left):not(.wr-pgfull__grid--four_mosaic_right) {
     grid-template-areas: none !important;
   }
-  .wr-promo-grid-full .wr-pgfull__tile {
+
+  .wr-pgfull__grid:not(.wr-pgfull__grid--three_mosaic_left):not(.wr-pgfull__grid--three_mosaic_right):not(.wr-pgfull__grid--four_mosaic_left):not(.wr-pgfull__grid--four_mosaic_right) .wr-pgfull__tile {
     grid-area: auto !important;
   }
 
-  /* Fixed height: avoid desktop row templates fighting tablet reset */
-  .wr-promo-grid-full.wr-pgfull--has-fixed-height .wr-pgfull__grid {
-    grid-template-rows: auto;
-    grid-auto-rows: minmax(0, 1fr);
+  .wr-pgfull__grid.wr-pgfull__grid--two_equal,
+  .wr-pgfull__grid.wr-pgfull__grid--two_split_70_30,
+  .wr-pgfull__grid.wr-pgfull__grid--two_split_30_70 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .wr-pgfull__grid.wr-pgfull__grid--six_grid {
+    grid-template-rows: repeat(3, auto);
+  }
+
+  /*
+   * Mosaic presets on tablet: keep desktop-like structure.
+   * (They already define their columns/rows/areas above.)
+   * Just ensure nothing collapses.
+   */
+  .wr-pgfull__grid.wr-pgfull__grid--three_mosaic_left,
+  .wr-pgfull__grid.wr-pgfull__grid--three_mosaic_right {
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  .wr-pgfull__grid.wr-pgfull__grid--four_mosaic_left,
+  .wr-pgfull__grid.wr-pgfull__grid--four_mosaic_right {
+    grid-template-rows: repeat(3, 1fr);
   }
 }
 
