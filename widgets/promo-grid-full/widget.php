@@ -369,6 +369,22 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
             ]
         );
 
+        /**
+         * True container height (shrinks/expands the whole widget area)
+         */
+        $this->add_responsive_control(
+            'container_height',
+            [
+                'label'      => __( 'Container Height', 'wr-ew' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [ 'px' => [ 'min' => 200, 'max' => 1200 ] ],
+                'selectors'  => [
+                    '{{WRAPPER}} .wr-promo-grid-full' => 'height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
         $this->add_control(
             'container_width_mode',
             [
@@ -859,6 +875,9 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         $wrapper_classes = [ 'wr-promo-grid-full' ];
         if ( $full_width ) {
             $wrapper_classes[] = 'wr-pgfull--fullwidth';
+        }
+        if ( isset( $settings['container_height'] ) && is_array( $settings['container_height'] ) && ! empty( $settings['container_height']['size'] ) ) {
+            $wrapper_classes[] = 'wr-pgfull--has-fixed-height';
         }
 
         $grid_classes = [ 'wr-pgfull__grid', 'wr-pgfull__grid--' . $preset ];
