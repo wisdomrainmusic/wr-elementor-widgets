@@ -217,6 +217,70 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         );
 
         $repeater->add_control(
+            'tile_media_zoom',
+            [
+                'label'       => __( 'Tile Media Zoom (per-tile)', 'wr-ew' ),
+                'type'        => Controls_Manager::SLIDER,
+                'size_units'  => [ 'custom' ],
+                'range'       => [ 'custom' => [ 'min' => 0.5, 'max' => 2.0, 'step' => 0.05 ] ],
+                'description' => __( 'Overrides global Media Zoom for this tile. Leave empty to use global.', 'wr-ew' ),
+            ]
+        );
+
+        // Per-tile content positioning overrides
+        $repeater->add_control(
+            'tile_content_heading',
+            [
+                'label' => __( 'Per-tile Content Position', 'wr-ew' ),
+                'type'  => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $repeater->add_control(
+            'tile_offset_x',
+            [
+                'label'      => __( 'Tile Offset X', 'wr-ew' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [ 'px' => [ 'min' => -200, 'max' => 200 ] ],
+                'description'=> __( 'Overrides global Offset X for this tile. Leave empty to use global.', 'wr-ew' ),
+            ]
+        );
+
+        $repeater->add_control(
+            'tile_offset_y',
+            [
+                'label'      => __( 'Tile Offset Y', 'wr-ew' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [ 'px' => [ 'min' => -200, 'max' => 200 ] ],
+                'description'=> __( 'Overrides global Offset Y for this tile. Leave empty to use global.', 'wr-ew' ),
+            ]
+        );
+
+        $repeater->add_control(
+            'tile_content_maxw',
+            [
+                'label'      => __( 'Tile Content Max Width', 'wr-ew' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range'      => [ 'px' => [ 'min' => 120, 'max' => 900 ] ],
+                'description'=> __( 'Overrides global Content Block Max Width for this tile. Leave empty to use global.', 'wr-ew' ),
+            ]
+        );
+
+        $repeater->add_control(
+            'tile_content_padding',
+            [
+                'label'      => __( 'Tile Content Padding', 'wr-ew' ),
+                'type'       => Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', '%', 'em' ],
+                'description'=> __( 'Overrides global Content Padding for this tile. Leave empty to use global.', 'wr-ew' ),
+            ]
+        );
+
+        $repeater->add_control(
             'tile_type',
             [
                 'label'   => __( 'Tile Type', 'wr-ew' ),
@@ -541,10 +605,10 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
                 'label' => __( 'Media Zoom', 'wr-ew' ),
                 'type'  => Controls_Manager::SLIDER,
                 'size_units' => [ 'custom' ],
-                'range' => [ 'custom' => [ 'min' => 1.0, 'max' => 1.3, 'step' => 0.05 ] ],
+                'range' => [ 'custom' => [ 'min' => 0.5, 'max' => 2.0, 'step' => 0.05 ] ],
                 'default' => [ 'size' => 1.0, 'unit' => '' ],
                 'selectors' => [
-                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-media-zoom: {{SIZE}};',
+                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-media-zoom-global: {{SIZE}};',
                 ],
             ]
         );
@@ -722,7 +786,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
                 'size_units' => [ 'px' ],
                 'range'      => [ 'px' => [ 'min' => 120, 'max' => 800 ] ],
                 'selectors'  => [
-                    '{{WRAPPER}} .wr-pgfull__content' => 'max-width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-content-maxw: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -734,7 +798,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
                 'type'       => Controls_Manager::DIMENSIONS,
                 'size_units' => [ 'px', '%', 'em' ],
                 'selectors'  => [
-                    '{{WRAPPER}} .wr-pgfull__content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-content-pad: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -747,7 +811,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
                 'size_units' => [ 'px' ],
                 'range'      => [ 'px' => [ 'min' => -120, 'max' => 120 ] ],
                 'selectors'  => [
-                    '{{WRAPPER}} .wr-pgfull__content' => '--wr-pgfull-x: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-x: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -760,7 +824,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
                 'size_units' => [ 'px' ],
                 'range'      => [ 'px' => [ 'min' => -120, 'max' => 120 ] ],
                 'selectors'  => [
-                    '{{WRAPPER}} .wr-pgfull__content' => '--wr-pgfull-y: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-y: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -816,6 +880,50 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         $tag = $tile_link ? 'a' : 'div';
 
         $attrs = '';
+        $style_vars = [];
+
+        // Per-tile media zoom (optional)
+        if ( ! empty( $tile['tile_media_zoom'] ) && is_array( $tile['tile_media_zoom'] ) && isset( $tile['tile_media_zoom']['size'] ) && '' !== $tile['tile_media_zoom']['size'] ) {
+            $z = (float) $tile['tile_media_zoom']['size'];
+            // Safety clamp (matches CSS clamp bounds)
+            if ( $z < 0.5 ) $z = 0.5;
+            if ( $z > 2.0 ) $z = 2.0;
+            $style_vars[] = '--wr-pgfull-media-zoom:' . $z;
+        }
+
+        // Per-tile content overrides (optional)
+        if ( ! empty( $tile['tile_offset_x'] ) && is_array( $tile['tile_offset_x'] ) && isset( $tile['tile_offset_x']['size'] ) && '' !== $tile['tile_offset_x']['size'] ) {
+            $style_vars[] = '--wr-pgfull-x:' . (float) $tile['tile_offset_x']['size'] . 'px';
+        }
+        if ( ! empty( $tile['tile_offset_y'] ) && is_array( $tile['tile_offset_y'] ) && isset( $tile['tile_offset_y']['size'] ) && '' !== $tile['tile_offset_y']['size'] ) {
+            $style_vars[] = '--wr-pgfull-y:' . (float) $tile['tile_offset_y']['size'] . 'px';
+        }
+        if ( ! empty( $tile['tile_content_maxw'] ) && is_array( $tile['tile_content_maxw'] ) && isset( $tile['tile_content_maxw']['size'] ) && '' !== $tile['tile_content_maxw']['size'] ) {
+            $style_vars[] = '--wr-pgfull-content-maxw:' . (float) $tile['tile_content_maxw']['size'] . 'px';
+        }
+        if ( ! empty( $tile['tile_content_padding'] ) && is_array( $tile['tile_content_padding'] ) ) {
+            $p = $tile['tile_content_padding'];
+            $unit = ! empty( $p['unit'] ) ? $p['unit'] : 'px';
+            $top    = isset( $p['top'] ) ? $p['top'] : '';
+            $right  = isset( $p['right'] ) ? $p['right'] : '';
+            $bottom = isset( $p['bottom'] ) ? $p['bottom'] : '';
+            $left   = isset( $p['left'] ) ? $p['left'] : '';
+
+            // Apply only if at least one side has a value
+            if ( '' !== $top || '' !== $right || '' !== $bottom || '' !== $left ) {
+                $top    = ( '' === $top ) ? '0' : (float) $top;
+                $right  = ( '' === $right ) ? '0' : (float) $right;
+                $bottom = ( '' === $bottom ) ? '0' : (float) $bottom;
+                $left   = ( '' === $left ) ? '0' : (float) $left;
+                $style_vars[] = '--wr-pgfull-content-pad:' . $top . $unit . ' ' . $right . $unit . ' ' . $bottom . $unit . ' ' . $left . $unit;
+            }
+        }
+
+        $style_attr = '';
+        if ( ! empty( $style_vars ) ) {
+            $style_attr = ' style="' . esc_attr( implode( ';', $style_vars ) ) . ';"';
+        }
+
         if ( $tile_link ) {
             $attrs .= ' href="' . esc_url( $tile_link ) . '"';
             $rel = [];
@@ -827,7 +935,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
 
         ob_start();
         ?>
-        <<?php echo $tag; ?> class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"<?php echo $attrs; ?>>
+        <<?php echo $tag; ?> class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"<?php echo $attrs; ?><?php echo $style_attr; ?>>
             <div class="wr-pgfull__media">
                 <?php if ( 'video' === $tile_type && ! empty( $tile['video_url'] ) ) : ?>
                     <?php if ( $this->is_youtube_url( $tile['video_url'] ) ) : ?>

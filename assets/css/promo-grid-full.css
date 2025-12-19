@@ -3,6 +3,14 @@
   position: relative;
   width: 100%;
   box-sizing: border-box;
+  /* Global defaults (can be overridden per-tile via inline CSS vars) */
+  --wr-pgfull-media-zoom-global: 1;
+  --wr-pgfull-media-zoom-min: 0.85;
+  --wr-pgfull-media-zoom-max: 2;
+  /* Global content positioning defaults (per-tile can override) */
+  --wr-pgfull-x: 0px;
+  --wr-pgfull-y: 0px;
+  --wr-pgfull-content-maxw: 520px;
 }
 
 .wr-promo-grid-full *,
@@ -62,7 +70,13 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  transform: scale(var(--wr-pgfull-media-zoom, 1));
+  /*
+    Zoom behavior:
+    - Per-tile:  --wr-pgfull-media-zoom
+    - Fallback:  --wr-pgfull-media-zoom-global
+    Clamp prevents "0 => disappears" and keeps it smooth.
+  */
+  transform: scale(clamp(var(--wr-pgfull-media-zoom-min), var(--wr-pgfull-media-zoom, var(--wr-pgfull-media-zoom-global)), var(--wr-pgfull-media-zoom-max)));
   transition: transform 0.65s ease;
 }
 
@@ -112,8 +126,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 520px;
-  padding: 18px;
+  max-width: var(--wr-pgfull-content-maxw, 520px);
+  padding: var(--wr-pgfull-content-pad, 18px);
   transform: translate(var(--wr-pgfull-x, 0px), var(--wr-pgfull-y, 0px));
   will-change: transform;
 }
