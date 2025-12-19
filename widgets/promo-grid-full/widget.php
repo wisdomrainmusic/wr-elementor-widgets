@@ -577,15 +577,12 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         $this->add_control(
             'media_zoom',
             [
-                'label' => __( 'Media Zoom (Global)', 'wr-ew' ),
+                'label' => __( 'Media Zoom', 'wr-ew' ),
                 'type'  => Controls_Manager::SLIDER,
                 'size_units' => [ 'custom' ],
                 'range' => [ 'custom' => [ 'min' => 0, 'max' => 100, 'step' => 1 ] ],
                 'default' => [ 'size' => 50, 'unit' => '' ],
                 'description' => __( '50 = 100% (normal). Lower shrinks, higher enlarges.', 'wr-ew' ),
-                'selectors' => [
-                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-zoom-pct: {{SIZE}};',
-                ],
             ]
         );
 
@@ -905,24 +902,32 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
             if ( ! empty( $rel ) ) $attrs .= ' rel="' . esc_attr( implode( ' ', array_unique( $rel ) ) ) . '"';
         }
 
-        // Per-tile zoom override (0..100, 50=normal)
+        $tile_style = '';
         $tile_zoom_pct = null;
-        if ( isset( $tile['tile_media_zoom'] ) && is_array( $tile['tile_media_zoom'] ) && $tile['tile_media_zoom']['size'] !== '' ) {
+
+        if ( isset( $tile['tile_media_zoom']['size'] ) && $tile['tile_media_zoom']['size'] !== '' ) {
             $tile_zoom_pct = (int) $tile['tile_media_zoom']['size'];
+        }
+
+        if ( $tile_zoom_pct !== null ) {
+            $tile_scale = 0.5 + ( $tile_zoom_pct / 100 );
+            if ( $tile_scale < 0.2 ) $tile_scale = 0.2;
+            if ( $tile_scale > 2.0 ) $tile_scale = 2.0;
+            $tile_style = '--wr-pgfull-media-scale:' . esc_attr( $tile_scale );
         }
 
         $tile_vars = $this->build_tile_inline_vars( $tile );
         $style_parts = [];
         if ( $tile_vars ) $style_parts[] = $tile_vars;
-        if ( $tile_zoom_pct !== null ) $style_parts[] = '--wr-pgfull-zoom-pct:' . esc_attr( $tile_zoom_pct );
-        $style_attr = $style_parts ? ' style="' . esc_attr( implode( ';', $style_parts ) ) . '"' : '';
+        if ( $tile_style ) $style_parts[] = $tile_style;
+        $tile_style = $style_parts ? ' style="' . esc_attr( implode( ';', $style_parts ) ) . ';"' : '';
 
         $content_inline = $this->build_tile_content_inline_style( $tile );
         $content_style_attr = $content_inline ? ' style="' . esc_attr( $content_inline ) . '"' : '';
 
         ob_start();
         ?>
-        <<?php echo $tag; ?> class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"<?php echo $attrs; ?><?php echo $style_attr; ?>>
+        <<?php echo $tag; ?> class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"<?php echo $attrs; ?><?php echo $tile_style; ?>>
             <div class="wr-pgfull__media">
                 <?php if ( 'video' === $tile_type && ! empty( $tile['video_url'] ) ) : ?>
                     <?php if ( $this->is_youtube_url( $tile['video_url'] ) ) : ?>
@@ -999,9 +1004,19 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         $wrapper_classes = [ 'wr-promo-grid-full' ];
         if ( $full_width ) $wrapper_classes[] = 'wr-pgfull--fullwidth';
 
+        $global_zoom_pct = 50;
+        if ( isset( $settings['media_zoom']['size'] ) && $settings['media_zoom']['size'] !== '' ) {
+            $global_zoom_pct = (int) $settings['media_zoom']['size'];
+        }
+        $global_scale = 0.5 + ( $global_zoom_pct / 100 );
+        if ( $global_scale < 0.2 ) $global_scale = 0.2;
+        if ( $global_scale > 2.0 ) $global_scale = 2.0;
+
+        $wrapper_style = ' style="--wr-pgfull-media-scale:' . esc_attr( $global_scale ) . ';"';
+
         $grid_classes = [ 'wr-pgfull__grid', 'wr-pgfull__grid--' . $preset ];
 
-        echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '">';
+        echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $wrapper_style . '>';
         echo '<div class="wr-pgfull__inner">';
         echo '<div class="' . esc_attr( implode( ' ', $grid_classes ) ) . '">';
 
