@@ -1,0 +1,308 @@
+/* WR Promo Grid Full (scoped) */
+.wr-promo-grid-full {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wr-promo-grid-full *,
+.wr-promo-grid-full *::before,
+.wr-promo-grid-full *::after {
+  box-sizing: border-box;
+}
+
+.wr-pgfull--fullwidth {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  overflow-x: hidden;
+}
+
+.wr-pgfull__inner {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.wr-pgfull__grid {
+  display: grid;
+  width: 100%;
+  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+}
+
+/* Tile */
+.wr-pgfull__tile {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 16px;
+  min-height: 340px;
+  color: inherit;
+  text-decoration: none;
+  isolation: isolate;
+}
+
+.wr-pgfull__tile:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.wr-pgfull__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wr-pgfull__media img,
+.wr-pgfull__media video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transform: scale(var(--wr-pgfull-media-zoom, 1));
+  transition: transform 0.65s ease;
+}
+
+.wr-pgfull__media iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.wr-pgfull__placeholder {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.06),
+    rgba(0,0,0,0.06) 10px,
+    rgba(0,0,0,0.08) 10px,
+    rgba(0,0,0,0.08) 20px
+  );
+}
+
+/* Overlay must not block interactions with media (video/iframe) */
+.wr-pgfull__overlay {
+  pointer-events: none;
+}
+
+.wr-pgfull__content {
+  pointer-events: auto;
+}
+
+.wr-pgfull__overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0.35;
+  z-index: 1;
+  transition: opacity 0.35s ease;
+}
+
+.wr-pgfull__content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 520px;
+  padding: 18px;
+  transform: translate(var(--wr-pgfull-x, 0px), var(--wr-pgfull-y, 0px));
+  will-change: transform;
+}
+
+/* Content placement */
+.wr-pgfull__content--pos-bottom-left   { justify-content: flex-end; align-items: flex-start; height: 100%; }
+.wr-pgfull__content--pos-bottom-center { justify-content: flex-end; align-items: center; height: 100%; text-align: center; }
+.wr-pgfull__content--pos-bottom-right  { justify-content: flex-end; align-items: flex-end; height: 100%; text-align: right; }
+
+.wr-pgfull__content--pos-center-left   { justify-content: center; align-items: flex-start; height: 100%; }
+.wr-pgfull__content--pos-center        { justify-content: center; align-items: center; height: 100%; text-align: center; }
+.wr-pgfull__content--pos-center-right  { justify-content: center; align-items: flex-end; height: 100%; text-align: right; }
+
+.wr-pgfull__content--pos-top-left      { justify-content: flex-start; align-items: flex-start; height: 100%; }
+.wr-pgfull__content--pos-top-center    { justify-content: flex-start; align-items: center; height: 100%; text-align: center; }
+.wr-pgfull__content--pos-top-right     { justify-content: flex-start; align-items: flex-end; height: 100%; text-align: right; }
+
+.wr-pgfull__title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.25;
+  color: inherit;
+}
+
+.wr-pgfull__subtitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: inherit;
+}
+
+.wr-pgfull__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.16);
+  color: inherit;
+  border: 1px solid rgba(255,255,255,0.2);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.wr-pgfull__button:hover {
+  background: rgba(255,255,255,0.24);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* Hover effects (tile classes added by PHP) */
+.wr-pgfull__tile--hover-zoom:hover .wr-pgfull__media img,
+.wr-pgfull__tile--hover-zoom:hover .wr-pgfull__media video {
+  transform: scale(calc(var(--wr-pgfull-media-zoom, 1) * 1.08));
+}
+
+.wr-pgfull__tile--hover-dim:hover .wr-pgfull__overlay {
+  opacity: 0.55;
+}
+
+/* -----------------------------
+   PRESETS (DESKTOP TRUE LAYOUT)
+   ----------------------------- */
+
+/* 1) two_equal */
+.wr-pgfull__grid--two_equal {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 2) two_split_70_30 */
+.wr-pgfull__grid--two_split_70_30 {
+  grid-template-columns: 7fr 3fr;
+}
+
+/* 3) two_split_30_70 */
+.wr-pgfull__grid--two_split_30_70 {
+  grid-template-columns: 3fr 7fr;
+}
+
+/* 4) three_equal */
+.wr-pgfull__grid--three_equal {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 5) three_mosaic_left (a b / a c) */
+.wr-pgfull__grid--three_mosaic_left {
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+    "a b"
+    "a c";
+}
+.wr-pgfull__grid--three_mosaic_left .wr-pgfull__tile:nth-child(1) { grid-area: a; }
+.wr-pgfull__grid--three_mosaic_left .wr-pgfull__tile:nth-child(2) { grid-area: b; }
+.wr-pgfull__grid--three_mosaic_left .wr-pgfull__tile:nth-child(3) { grid-area: c; }
+
+/* 6) three_mosaic_right (b a / c a) */
+.wr-pgfull__grid--three_mosaic_right {
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+    "b a"
+    "c a";
+}
+.wr-pgfull__grid--three_mosaic_right .wr-pgfull__tile:nth-child(1) { grid-area: a; }
+.wr-pgfull__grid--three_mosaic_right .wr-pgfull__tile:nth-child(2) { grid-area: b; }
+.wr-pgfull__grid--three_mosaic_right .wr-pgfull__tile:nth-child(3) { grid-area: c; }
+
+/* 7) four_checker (2x2) */
+.wr-pgfull__grid--four_checker {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+/* 8) four_mosaic_left (a b / a c / a d) */
+.wr-pgfull__grid--four_mosaic_left {
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    "a b"
+    "a c"
+    "a d";
+}
+.wr-pgfull__grid--four_mosaic_left .wr-pgfull__tile:nth-child(1) { grid-area: a; }
+.wr-pgfull__grid--four_mosaic_left .wr-pgfull__tile:nth-child(2) { grid-area: b; }
+.wr-pgfull__grid--four_mosaic_left .wr-pgfull__tile:nth-child(3) { grid-area: c; }
+.wr-pgfull__grid--four_mosaic_left .wr-pgfull__tile:nth-child(4) { grid-area: d; }
+
+/* 9) four_mosaic_right (b a / c a / d a) */
+.wr-pgfull__grid--four_mosaic_right {
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    "b a"
+    "c a"
+    "d a";
+}
+.wr-pgfull__grid--four_mosaic_right .wr-pgfull__tile:nth-child(1) { grid-area: a; }
+.wr-pgfull__grid--four_mosaic_right .wr-pgfull__tile:nth-child(2) { grid-area: b; }
+.wr-pgfull__grid--four_mosaic_right .wr-pgfull__tile:nth-child(3) { grid-area: c; }
+.wr-pgfull__grid--four_mosaic_right .wr-pgfull__tile:nth-child(4) { grid-area: d; }
+
+/* 10) six_grid (3x2) */
+.wr-pgfull__grid--six_grid {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+/* -----------------------------
+   TABLET (768–1024): simplify
+   - 2 columns
+   - NO grid-template-areas
+   - Force tiles to flow in DOM order
+   ----------------------------- */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .wr-promo-grid-full .wr-pgfull__grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: auto !important;
+    grid-template-areas: none !important;
+  }
+
+  /* must defeat preset nth-child area assignments */
+  .wr-promo-grid-full .wr-pgfull__tile {
+    grid-area: auto !important;
+  }
+
+  /* keep six_grid reasonable on tablet (still 2 cols, auto rows) */
+  .wr-promo-grid-full .wr-pgfull__grid--six_grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* -----------------------------
+   MOBILE (<=767): ALWAYS stacked
+   ----------------------------- */
+@media (max-width: 767px) {
+  .wr-promo-grid-full .wr-pgfull__grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    grid-template-areas: none !important;
+  }
+
+  .wr-promo-grid-full .wr-pgfull__tile {
+    grid-area: auto !important;
+    min-height: auto;
+  }
+
+  .wr-promo-grid-full .wr-pgfull__content {
+    max-width: 100%;
+  }
+}
