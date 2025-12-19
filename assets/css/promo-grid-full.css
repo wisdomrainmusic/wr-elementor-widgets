@@ -4,9 +4,7 @@
   width: 100%;
   box-sizing: border-box;
   /* Global defaults (can be overridden per-tile via inline CSS vars) */
-  --wr-pgfull-media-zoom-global: 1;
-  --wr-pgfull-media-zoom-min: 0.85;
-  --wr-pgfull-media-zoom-max: 2;
+  --wr-pgfull-media-zoom: 0;
   /* Global content positioning defaults (per-tile can override) */
   --wr-pgfull-x: 0px;
   --wr-pgfull-y: 0px;
@@ -62,6 +60,11 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  --wr-pgfull-media-zoom-factor: clamp(
+    0.5,
+    calc(1 + (var(--wr-pgfull-media-zoom, 0) / 100)),
+    2
+  );
 }
 
 .wr-pgfull__media img,
@@ -70,13 +73,8 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  /*
-    Zoom behavior:
-    - Per-tile:  --wr-pgfull-media-zoom
-    - Fallback:  --wr-pgfull-media-zoom-global
-    Clamp prevents "0 => disappears" and keeps it smooth.
-  */
-  transform: scale(clamp(var(--wr-pgfull-media-zoom-min), var(--wr-pgfull-media-zoom, var(--wr-pgfull-media-zoom-global)), var(--wr-pgfull-media-zoom-max)));
+  /* Zoom: -100 => 0.5, 0 => 1, +100 => 2 (clamped to 0.5–2 range) */
+  transform: scale(var(--wr-pgfull-media-zoom-factor));
   transition: transform 0.65s ease;
 }
 
@@ -182,7 +180,7 @@
 /* Hover effects (tile classes added by PHP) */
 .wr-pgfull__tile--hover-zoom:hover .wr-pgfull__media img,
 .wr-pgfull__tile--hover-zoom:hover .wr-pgfull__media video {
-  transform: scale(calc(var(--wr-pgfull-media-zoom, 1) * 1.08));
+  transform: scale(calc(var(--wr-pgfull-media-zoom-factor) * 1.08));
 }
 
 .wr-pgfull__tile--hover-dim:hover .wr-pgfull__overlay {
