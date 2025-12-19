@@ -194,6 +194,18 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         );
 
         $repeater->add_control(
+            'tile_media_zoom',
+            [
+                'label' => __( 'Tile Media Zoom (per-tile)', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'custom' ],
+                'range' => [ 'custom' => [ 'min' => 0, 'max' => 100, 'step' => 1 ] ],
+                'default' => [ 'size' => 50, 'unit' => '' ],
+                'description' => __( '50 = 100% (normal). Lower shrinks, higher enlarges.', 'wr-ew' ),
+            ]
+        );
+
+        $repeater->add_control(
             'tile_type',
             [
                 'label'   => __( 'Tile Type', 'wr-ew' ),
@@ -308,23 +320,6 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
                     'top-center'    => __( 'Top Center', 'wr-ew' ),
                     'top-right'     => __( 'Top Right', 'wr-ew' ),
                 ],
-            ]
-        );
-
-        /**
-         * PATCH: Per-tile Media Zoom (centered)
-         * -100..0..+100 => 0 means scale(1)
-         * Stored as percentage delta, converted to scale in render.
-         */
-        $repeater->add_control(
-            'tile_media_zoom_delta',
-            [
-                'label'       => __( 'Tile Media Zoom (per-tile)', 'wr-ew' ),
-                'type'        => Controls_Manager::SLIDER,
-                'size_units'  => [ 'custom' ],
-                'range'       => [ 'custom' => [ 'min' => -100, 'max' => 100, 'step' => 1 ] ],
-                'default'     => [ 'size' => 0, 'unit' => '' ],
-                'description' => __( '0 = 100% (no zoom). Negative shrinks, positive enlarges.', 'wr-ew' ),
             ]
         );
 
@@ -579,20 +574,18 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
             ]
         );
 
-        /**
-         * Global Media Zoom (kept)
-         * Still useful as default baseline for all tiles (per-tile overrides it).
-         * Slider is centered: -100..0..+100
-         */
         $this->add_control(
-            'media_zoom_delta',
+            'media_zoom',
             [
                 'label' => __( 'Media Zoom (Global)', 'wr-ew' ),
                 'type'  => Controls_Manager::SLIDER,
                 'size_units' => [ 'custom' ],
-                'range' => [ 'custom' => [ 'min' => -100, 'max' => 100, 'step' => 1 ] ],
-                'default' => [ 'size' => 0, 'unit' => '' ],
-                'description' => __( '0 = 100% (no zoom). Negative shrinks, positive enlarges.', 'wr-ew' ),
+                'range' => [ 'custom' => [ 'min' => 0, 'max' => 100, 'step' => 1 ] ],
+                'default' => [ 'size' => 50, 'unit' => '' ],
+                'description' => __( '50 = 100% (normal). Lower shrinks, higher enlarges.', 'wr-ew' ),
+                'selectors' => [
+                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-zoom-pct: {{SIZE}};',
+                ],
             ]
         );
 
@@ -831,30 +824,8 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         return isset( $map[ $preset ] ) ? $map[ $preset ] : 6;
     }
 
-    private function delta_to_scale( $delta ) {
-        // delta -100..+100 -> scale 0.5..1.5 (safe, smooth, and allows shrink)
-        $d = is_numeric( $delta ) ? (float) $delta : 0.0;
-        $d = max( -100.0, min( 100.0, $d ) );
-        $scale = 1.0 + ( $d / 200.0 ); // -100 => 0.5, 0 => 1.0, +100 => 1.5
-        $scale = max( 0.2, min( 2.0, $scale ) );
-        return $scale;
-    }
-
-    private function build_tile_inline_vars( $tile, $settings ) {
+    private function build_tile_inline_vars( $tile ) {
         $vars = [];
-
-        // Global media zoom baseline
-        $global_delta = 0;
-        if ( isset( $settings['media_zoom_delta']['size'] ) && $settings['media_zoom_delta']['size'] !== '' ) {
-            $global_delta = (float) $settings['media_zoom_delta']['size'];
-        }
-        $scale = $this->delta_to_scale( $global_delta );
-
-        // Per-tile override (if present)
-        if ( isset( $tile['tile_media_zoom_delta']['size'] ) && $tile['tile_media_zoom_delta']['size'] !== '' ) {
-            $scale = $this->delta_to_scale( (float) $tile['tile_media_zoom_delta']['size'] );
-        }
-        $vars[] = '--wr-pgfull-media-scale:' . $scale;
 
         // Per-tile content position overrides
         if ( isset( $tile['tile_offset_x']['size'] ) && $tile['tile_offset_x']['size'] !== '' ) {
@@ -897,7 +868,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         return $style;
     }
 
-    private function render_tile( $tile, $hover_effect, $settings ) {
+    private function render_tile( $tile, $hover_effect ) {
         if ( empty( $tile['show_tile'] ) || 'yes' !== $tile['show_tile'] ) return '';
 
         $tile_type = ! empty( $tile['tile_type'] ) ? $tile['tile_type'] : 'image';
@@ -934,8 +905,17 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
             if ( ! empty( $rel ) ) $attrs .= ' rel="' . esc_attr( implode( ' ', array_unique( $rel ) ) ) . '"';
         }
 
-        $tile_vars = $this->build_tile_inline_vars( $tile, $settings );
-        $style_attr = $tile_vars ? ' style="' . esc_attr( $tile_vars ) . '"' : '';
+        // Per-tile zoom override (0..100, 50=normal)
+        $tile_zoom_pct = null;
+        if ( isset( $tile['tile_media_zoom'] ) && is_array( $tile['tile_media_zoom'] ) && $tile['tile_media_zoom']['size'] !== '' ) {
+            $tile_zoom_pct = (int) $tile['tile_media_zoom']['size'];
+        }
+
+        $tile_vars = $this->build_tile_inline_vars( $tile );
+        $style_parts = [];
+        if ( $tile_vars ) $style_parts[] = $tile_vars;
+        if ( $tile_zoom_pct !== null ) $style_parts[] = '--wr-pgfull-zoom-pct:' . esc_attr( $tile_zoom_pct );
+        $style_attr = $style_parts ? ' style="' . esc_attr( implode( ';', $style_parts ) ) . '"' : '';
 
         $content_inline = $this->build_tile_content_inline_style( $tile );
         $content_style_attr = $content_inline ? ' style="' . esc_attr( $content_inline ) . '"' : '';
@@ -1026,7 +1006,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         echo '<div class="' . esc_attr( implode( ' ', $grid_classes ) ) . '">';
 
         foreach ( $tiles as $tile ) {
-            echo $this->render_tile( $tile, $hover, $settings );
+            echo $this->render_tile( $tile, $hover );
         }
 
         echo '</div></div></div>';
