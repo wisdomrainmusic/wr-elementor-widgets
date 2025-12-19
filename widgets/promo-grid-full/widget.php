@@ -122,7 +122,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         $repeater->add_control( 'image', [
             'label'   => __( 'Image', 'wr-ew' ),
             'type'    => Controls_Manager::MEDIA,
-            'default' => [ 'url' => Controls_Manager::get_placeholder_image_src() ],
+            'default' => [],
             'condition' => [ 'tile_type' => 'image' ],
         ] );
 
