@@ -13,11 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 define( 'WR_EW_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WR_EW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-add_action( 'wp_enqueue_scripts', function() {
-    wp_register_style( 'wr-usp-row-css', WR_EW_PLUGIN_URL . 'assets/css/usp-row.css', [], '1.0' );
-    wp_register_script( 'wr-usp-row-js', WR_EW_PLUGIN_URL . 'assets/js/usp-row.js', [ 'jquery' ], '1.0', true );
-}, 5 );
-
 // Load plugin loader.
 require_once WR_EW_PLUGIN_DIR . 'loader.php';
 

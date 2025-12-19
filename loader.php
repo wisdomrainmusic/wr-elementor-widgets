@@ -60,9 +60,7 @@ add_action( 'wp_enqueue_scripts', function() {
      */
     $assets = [
 
-        'hero-slider'        => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
         'hero-slider-full'   => [ 'css' => true, 'js' => [ 'jquery', 'wr-swiper' ] ],
-        'category-slider'    => [ 'css' => true, 'js' => [ 'wr-swiper' ] ],
 
         'blog-grid'            => [ 'css' => true, 'js' => [ 'jquery' ] ],
         'video-banner'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
@@ -71,7 +69,6 @@ add_action( 'wp_enqueue_scripts', function() {
         'campaign-bar-full'    => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
         'instagram-story' => [ 'css' => true, 'js' => [ 'jquery' ] ],
-        'usp-row'         => [ 'css' => true, 'js' => [ 'jquery' ] ],
 
         // ✅ INLINE (CSS/JS widget içinde)
         'product-full-tabs'  => [ 'css' => false, 'js' => false ],
@@ -144,8 +141,6 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         // Core
         'blog-grid',
         'category-grid',
-        'category-slider',
-        'hero-slider',
         'hero-slider-full',
         'instagram-story',
         'video-banner',
@@ -157,8 +152,6 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'product-full-tabs',
         'featured-card-full',
         'hero-banner-full',
-
-        'usp-row',
     ];
 
     // %100 garantili class map
