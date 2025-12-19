@@ -122,6 +122,71 @@ class WR_EW_Category_Grid extends Widget_Base {
         );
 
         $this->end_controls_section();
+
+        $this->start_controls_section(
+            'section_style_card',
+            [
+                'label' => __( 'Card', 'wr-ew' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'card_max_width',
+            [
+                'label' => __( 'Card Max Width', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 200,
+                        'max' => 600,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-category-grid__item' => 'max-width: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'card_min_height',
+            [
+                'label' => __( 'Card Min Height', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 150,
+                        'max' => 600,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-category-grid__item' => 'min-height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'card_image_height',
+            [
+                'label' => __( 'Image Height', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 100,
+                        'max' => 500,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-category-grid__thumb' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .wr-category-grid__thumb img' => 'height: 100%;',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
     }
 
     private function get_product_categories_options() {
