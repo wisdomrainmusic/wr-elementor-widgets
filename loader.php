@@ -143,6 +143,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'category-grid',
         'hero-slider-full',
         'instagram-story',
+        'promo-grid-full',
         'video-banner',
         'product-grid-full',
         'testimonial-full',
@@ -161,6 +162,7 @@ add_action( 'elementor/widgets/register', function( $widgets_manager ) {
         'hero-banner-full'   => 'WR_EW_Hero_Banner_Full',
         'product-grid-full'  => 'WR_EW_Product_Grid_Full',
         'testimonial-full'   => 'WR_EW_Testimonial_Full',
+        'promo-grid-full'    => 'WR_EW_Promo_Grid_Full',
     ];
 
     foreach ( $widget_dirs as $widget ) {
