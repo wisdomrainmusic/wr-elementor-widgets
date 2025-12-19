@@ -73,6 +73,66 @@ class WR_EW_Category_Grid extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'full_width',
+            [
+                'label'        => __( 'Full Width (Hero Like)', 'wr-ew' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'return_value' => 'yes',
+                'default'      => '',
+            ]
+        );
+
+        $this->add_control(
+            'content_max_width',
+            [
+                'label' => __( 'Content Max Width', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 768,
+                        'max' => 1920,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 1200,
+                ],
+                'condition' => [
+                    'full_width' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-cg__inner' => 'max-width: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'fullwidth_side_padding',
+            [
+                'label' => __( 'Full Width Side Padding', 'wr-ew' ),
+                'type'  => Controls_Manager::SLIDER,
+                'size_units' => [ 'px' ],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 80,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 20,
+                ],
+                'condition' => [
+                    'full_width' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .wr-cg__inner' => 'padding-left: {{SIZE}}{{UNIT}}; padding-right: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
         $this->end_controls_section();
 
         $this->start_controls_section(
@@ -235,24 +295,32 @@ class WR_EW_Category_Grid extends Widget_Base {
             return;
         }
 
-        $column_class = 'wr-category-grid--cols-' . absint( $columns );
+        $column_class   = 'wr-category-grid--cols-' . absint( $columns );
+        $is_full_width  = isset( $settings['full_width'] ) && 'yes' === $settings['full_width'];
+        $wrapper_class  = 'wr-category-grid ' . $column_class;
+
+        if ( $is_full_width ) {
+            $wrapper_class .= ' wr-category-grid--fullwidth';
+        }
         ?>
-        <div class="wr-category-grid <?php echo esc_attr( $column_class ); ?>">
-            <?php foreach ( $terms as $term ) :
-                $thumbnail_id = get_term_meta( $term->term_id, 'thumbnail_id', true );
-                $image_url    = $thumbnail_id ? wp_get_attachment_image_url( $thumbnail_id, 'medium' ) : false;
-                $placeholder  = function_exists( 'wc_placeholder_img_src' ) ? wc_placeholder_img_src() : Utils::get_placeholder_image_src();
-                $image_url    = $image_url ? $image_url : $placeholder;
-                $link         = get_term_link( $term );
-                ?>
-                <a class="wr-category-grid__item" href="<?php echo esc_url( $link ); ?>">
-                    <div class="wr-category-grid__thumb">
-                        <img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $term->name ); ?>">
-                    </div>
-                    <h3 class="wr-category-grid__title"><?php echo esc_html( $term->name ); ?></h3>
-                    <span class="wr-category-grid__count"><?php echo sprintf( _n( '%s product', '%s products', $term->count, 'wr-ew' ), number_format_i18n( $term->count ) ); ?></span>
-                </a>
-            <?php endforeach; ?>
+        <div class="<?php echo esc_attr( $wrapper_class ); ?>">
+            <div class="wr-cg__inner">
+                <?php foreach ( $terms as $term ) :
+                    $thumbnail_id = get_term_meta( $term->term_id, 'thumbnail_id', true );
+                    $image_url    = $thumbnail_id ? wp_get_attachment_image_url( $thumbnail_id, 'medium' ) : false;
+                    $placeholder  = function_exists( 'wc_placeholder_img_src' ) ? wc_placeholder_img_src() : Utils::get_placeholder_image_src();
+                    $image_url    = $image_url ? $image_url : $placeholder;
+                    $link         = get_term_link( $term );
+                    ?>
+                    <a class="wr-category-grid__item" href="<?php echo esc_url( $link ); ?>">
+                        <div class="wr-category-grid__thumb">
+                            <img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $term->name ); ?>">
+                        </div>
+                        <h3 class="wr-category-grid__title"><?php echo esc_html( $term->name ); ?></h3>
+                        <span class="wr-category-grid__count"><?php echo sprintf( _n( '%s product', '%s products', $term->count, 'wr-ew' ), number_format_i18n( $term->count ) ); ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
         <?php
     }
