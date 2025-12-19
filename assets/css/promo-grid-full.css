@@ -27,7 +27,7 @@
 .wr-pgfull__grid {
   display: grid;
   width: 100%;
-  height: 100%;
+  height: auto;
   grid-auto-rows: auto;
 }
 
@@ -35,7 +35,7 @@
   position: relative;
   overflow: hidden;
   display: block;
-  height: 100%;
+  height: auto;
   min-height: 340px;
   color: inherit;
 }
@@ -243,6 +243,14 @@
   min-height: 0;
 }
 
+.wr-promo-grid-full.wr-pgfull--has-fixed-height .wr-pgfull__grid {
+  height: 100%;
+}
+
+.wr-promo-grid-full.wr-pgfull--has-fixed-height .wr-pgfull__tile {
+  height: 100%;
+}
+
 .wr-promo-grid-full.wr-pgfull--has-fixed-height .wr-pgfull__tile {
   min-height: 0;
 }
@@ -256,6 +264,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas: none;
     grid-template-rows: auto;
+  }
+
+  .wr-promo-grid-full .wr-pgfull__tile {
+    grid-area: auto !important;
   }
 
   .wr-promo-grid-full.wr-pgfull--has-fixed-height .wr-pgfull__grid {
@@ -277,6 +289,7 @@
 
   .wr-promo-grid-full .wr-pgfull__tile {
     min-height: 220px;
+    grid-area: auto !important;
   }
 
   .wr-promo-grid-full.wr-pgfull--has-fixed-height {
