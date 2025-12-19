@@ -222,7 +222,7 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
                 'label'       => __( 'Tile Media Zoom (per-tile)', 'wr-ew' ),
                 'type'        => Controls_Manager::SLIDER,
                 'size_units'  => [ 'custom' ],
-                'range'       => [ 'custom' => [ 'min' => 0.5, 'max' => 2.0, 'step' => 0.05 ] ],
+                'range'       => [ 'custom' => [ 'min' => -100, 'max' => 100, 'step' => 1 ] ],
                 'description' => __( 'Overrides global Media Zoom for this tile. Leave empty to use global.', 'wr-ew' ),
             ]
         );
@@ -605,10 +605,10 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
                 'label' => __( 'Media Zoom', 'wr-ew' ),
                 'type'  => Controls_Manager::SLIDER,
                 'size_units' => [ 'custom' ],
-                'range' => [ 'custom' => [ 'min' => 0.5, 'max' => 2.0, 'step' => 0.05 ] ],
-                'default' => [ 'size' => 1.0, 'unit' => '' ],
+                'range' => [ 'custom' => [ 'min' => -100, 'max' => 100, 'step' => 1 ] ],
+                'default' => [ 'size' => 0 ],
                 'selectors' => [
-                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-media-zoom-global: {{SIZE}};',
+                    '{{WRAPPER}} .wr-promo-grid-full' => '--wr-pgfull-media-zoom: {{SIZE}};',
                 ],
             ]
         );
@@ -886,8 +886,8 @@ class WR_EW_Promo_Grid_Full extends Widget_Base {
         if ( ! empty( $tile['tile_media_zoom'] ) && is_array( $tile['tile_media_zoom'] ) && isset( $tile['tile_media_zoom']['size'] ) && '' !== $tile['tile_media_zoom']['size'] ) {
             $z = (float) $tile['tile_media_zoom']['size'];
             // Safety clamp (matches CSS clamp bounds)
-            if ( $z < 0.5 ) $z = 0.5;
-            if ( $z > 2.0 ) $z = 2.0;
+            if ( $z < -100 ) $z = -100;
+            if ( $z > 100 ) $z = 100;
             $style_vars[] = '--wr-pgfull-media-zoom:' . $z;
         }
 
